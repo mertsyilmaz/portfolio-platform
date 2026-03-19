@@ -1,0 +1,21 @@
+<Solution>
+  <Folder Name="/docs/" />
+  <Folder Name="/infrastructure/" />
+  <Folder Name="/infrastructure/ci-cd/" />
+  <Folder Name="/infrastructure/database/" />
+  <Folder Name="/infrastructure/docker/" />
+  <Folder Name="/infrastructure/messaging/" />
+  <Folder Name="/infrastructure/monitoring/" />
+  <Folder Name="/src/" />
+  <Folder Name="/src/ApiGateway/" />
+  <Folder Name="/src/BuildingBlocks/" />
+  <Folder Name="/src/Services/" />
+  <Folder Name="/src/Services/Identity/">
+    <Project Path="src/Services/Identity/Identity.API/Identity.API.csproj" Id="9c546cfd-acef-4ee7-97d6-b4dcd54c20b0" />
+    <Project Path="src/Services/Identity/Identity.Application/Identity.Application.csproj" Id="38482618-15a6-460b-94fb-1f66cdee6ad4" />
+    <Project Path="src/Services/Identity/Identity.Contracts/Identity.Contracts.csproj" Id="b575d553-0bf8-4433-8bd9-ef3b6495951c" />
+    <Project Path="src/Services/Identity/Identity.Domain/Identity.Domain.csproj" Id="70f41dd7-2890-4dc5-a10c-18186c90e74f" />
+    <Project Path="src/Services/Identity/Identity.Infrastructure/Identity.Infrastructure.csproj" Id="d51a941d-e156-484c-97a1-cc870dfbbdcf" />
+  </Folder>
+  <Folder Name="/tests/" />
+</Solution>
