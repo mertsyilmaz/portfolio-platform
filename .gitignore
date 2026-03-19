@@ -1,0 +1,40 @@
+# Build
+bin/
+obj/
+out/
+
+# Visual Studio
+.vs/
+*.user
+*.suo
+*.userosscache
+*.sln.docstates
+
+# VS Code
+.vscode/
+
+# Rider
+.idea/
+
+# Logs
+*.log
+
+# OS
+.DS_Store
+Thumbs.db
+
+# NuGet
+*.nupkg
+packages/
+
+# Environment
+.env
+
+# Docker
+docker-compose.override.yml
+
+# Test results
+TestResults/
+
+# Coverage
+coverage/
