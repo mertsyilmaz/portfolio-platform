@@ -10,6 +10,13 @@
   <Folder Name="/src/ApiGateway/" />
   <Folder Name="/src/BuildingBlocks/" />
   <Folder Name="/src/Services/" />
+  <Folder Name="/src/Services/CV/">
+    <Project Path="src/Services/CV/CV.API/CV.API.csproj" Id="9f194369-bcb1-4e21-b4bc-bb007dd40ea0" />
+    <Project Path="src/Services/CV/CV.Application/CV.Application.csproj" Id="495d9f88-a52d-4080-84d8-e9c0974ea221" />
+    <Project Path="src/Services/CV/CV.Contracts/CV.Contracts.csproj" Id="c79248fa-af42-43d0-a4b2-1de48a1db2e7" />
+    <Project Path="src/Services/CV/CV.Domain/CV.Domain.csproj" Id="adecdd25-e39d-4c34-a915-9aff1ac51bb2" />
+    <Project Path="src/Services/CV/CV.Infrastructure/CV.Infrastructure.csproj" Id="7c6a7905-a1da-44f9-9566-faac3719620b" />
+  </Folder>
   <Folder Name="/src/Services/Identity/">
     <Project Path="src/Services/Identity/Identity.API/Identity.API.csproj" Id="9c546cfd-acef-4ee7-97d6-b4dcd54c20b0" />
     <Project Path="src/Services/Identity/Identity.Application/Identity.Application.csproj" Id="38482618-15a6-460b-94fb-1f66cdee6ad4" />

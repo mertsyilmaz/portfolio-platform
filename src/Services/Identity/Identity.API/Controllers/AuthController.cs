@@ -2,6 +2,7 @@
 using Identity.Contracts.Auth;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Authorization;
 
 namespace Identity.API.Controllers
 {
@@ -29,6 +30,13 @@ namespace Identity.API.Controllers
 
                 return Unauthorized(ex.Message);
             }
+        }
+
+        [Authorize]
+        [HttpGet("me")]
+        public IActionResult Me()
+        {
+            return Ok("You are authorized");
         }
 
     }
