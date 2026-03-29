@@ -8,5 +8,13 @@ namespace CV.Application.Abstractions.Persistence
     public interface IExperienceRepository
     {
         Task AddAsync(Experience experience);
+
+        Task<List<Experience>> GetAllAsync();
+
+        Task<Experience?> GetByIdAsync(Guid id);
+
+        Task UpdateAsync(Experience experience);
+
+        Task DeleteAsync(Experience experience);
     }
 }

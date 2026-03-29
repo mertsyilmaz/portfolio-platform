@@ -18,6 +18,10 @@ builder.Services.AddDbContext<CvDbContext>(options =>
 
 builder.Services.AddScoped<IExperienceRepository, ExperienceRepository>();
 builder.Services.AddScoped<ICreateExperienceService,CreateExperienceService>();
+builder.Services.AddScoped<IGetExperienceService, GetExperienceService>();
+builder.Services.AddScoped<IGetExperienceByIdService, GetExperienceByIdService>();
+builder.Services.AddScoped<IUpdateExperienceService, UpdateExperienceService>();
+builder.Services.AddScoped<IDeleteExperienceService, DeleteExperienceService>();
 
 var app = builder.Build();
 
