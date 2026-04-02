@@ -1,10 +1,12 @@
-using CV.Infrastructure.Persistence;
-using Microsoft.EntityFrameworkCore;
 using CV.Application.Abstractions.Persistence;
-using CV.Application.Experiences;
-using CV.Infrastructure.Repositories;
 using CV.Application.Educations;
+using CV.Application.Experiences;
+using CV.Application.PersonalInfos;
 using CV.Application.Skills;
+using CV.Application.SocialLinks;
+using CV.Infrastructure.Persistence;
+using CV.Infrastructure.Repositories;
+using Microsoft.EntityFrameworkCore;
 
 
 var builder = WebApplication.CreateBuilder(args);
@@ -38,6 +40,19 @@ builder.Services.AddScoped<IGetSkillsService, GetSkillsService>();
 builder.Services.AddScoped<IGetSkillByIdService, GetSkillByIdService>();
 builder.Services.AddScoped<IUpdateSkillService, UpdateSkillService>();
 builder.Services.AddScoped<IDeleteSkillService, DeleteSkillService>();
+
+builder.Services.AddScoped<IPersonalInfoRepository, PersonalInfoRepository>();
+builder.Services.AddScoped<ICreatePersonalInfoService, CreatePersonalInfoService>();
+builder.Services.AddScoped<IGetPersonalInfosService, GetPersonalInfoService>();
+builder.Services.AddScoped<IUpdatePersonalInfoService, UpdatePersonalInfoService>();
+builder.Services.AddScoped<IDeletePersonalInfoService, DeletePersonalInfoService>();
+
+builder.Services.AddScoped<ISocialLinkRepository, SocialLinkRepository>();
+builder.Services.AddScoped<ICreateSocialLinkService, CreateSocialLinkService>();
+builder.Services.AddScoped<IGetSocialLinksService, GetSocialLinksService>();
+builder.Services.AddScoped<IGetSocialLinkByIdService, GetSocialLinkByIdService>();
+builder.Services.AddScoped<IUpdateSocialLinkService, UpdateSocialLinkService>();
+builder.Services.AddScoped<IDeleteSocialLinkService, DeleteSocialLinkService>();
 
 var app = builder.Build();
 
