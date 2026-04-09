@@ -1,6 +1,9 @@
 using CV.Application.Abstractions.Persistence;
+using CV.Application.Certificates;
 using CV.Application.Educations;
 using CV.Application.Experiences;
+using CV.Application.Hobbies;
+using CV.Application.Languages;
 using CV.Application.PersonalInfos;
 using CV.Application.Skills;
 using CV.Application.SocialLinks;
@@ -53,6 +56,27 @@ builder.Services.AddScoped<IGetSocialLinksService, GetSocialLinksService>();
 builder.Services.AddScoped<IGetSocialLinkByIdService, GetSocialLinkByIdService>();
 builder.Services.AddScoped<IUpdateSocialLinkService, UpdateSocialLinkService>();
 builder.Services.AddScoped<IDeleteSocialLinkService, DeleteSocialLinkService>();
+
+builder.Services.AddScoped<ILanguageRepository, LanguageRepository>();
+builder.Services.AddScoped<ICreateLanguageService, CreateLanguageService>();
+builder.Services.AddScoped<IGetLanguagesService, GetLanguagesService>();
+builder.Services.AddScoped<IGetLanguageByIdService, GetLanguageByIdService>();
+builder.Services.AddScoped<IUpdateLanguageService, UpdateLanguageService>();
+builder.Services.AddScoped<IDeleteLanguageService, DeleteLanguageService>();
+
+builder.Services.AddScoped<ICertificateRepository, CertificateRepository>();
+builder.Services.AddScoped<ICreateCertificateService, CreateCertificateService>();
+builder.Services.AddScoped<IGetCertificatesService, GetCertificatesService>();
+builder.Services.AddScoped<IGetCertificateByIdService, GetCertificateByIdService>();
+builder.Services.AddScoped<IUpdateCertificateService, UpdateCertificateService>();
+builder.Services.AddScoped<IDeleteCertificateService, DeleteCertificateService>();
+
+builder.Services.AddScoped<IHobbyRepository, HobbyRepository>();
+builder.Services.AddScoped<ICreateHobbyService, CreateHobbyService>();
+builder.Services.AddScoped<IGetHobbiesService, GetHobbiesService>();
+builder.Services.AddScoped<IGetHobbyByIdService, GetHobbyByIdService>();
+builder.Services.AddScoped<IUpdateHobbyService, UpdateHobbyService>();
+builder.Services.AddScoped<IDeleteHobbyService, DeleteHobbyService>();
 
 var app = builder.Build();
 

@@ -17,7 +17,9 @@ namespace CV.Infrastructure.Persistence
         public DbSet<Skill> Skills => Set<Skill>();
         public DbSet<PersonalInfo> PersonalInfos => Set<PersonalInfo>();
         public DbSet<SocialLink> SocialLinks => Set<SocialLink>();
-
+        public DbSet<Language> Languages => Set<Language>();
+        public DbSet<Certificate> Certificates => Set<Certificate>();
+        public DbSet<Hobby> Hobbies => Set<Hobby>();
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             base.OnModelCreating(modelBuilder);
@@ -72,20 +74,37 @@ namespace CV.Infrastructure.Persistence
             modelBuilder.Entity<SocialLink>(entity =>
             {
                 entity.HasKey(x => x.Id);
+                entity.Property(x => x.Platform).IsRequired().HasMaxLength(100);
+                entity.Property(x => x.Url).IsRequired().HasMaxLength(500);
+                entity.Property(x => x.DisplayOrder).IsRequired();
+                entity.Property(x => x.CreatedAt).IsRequired();
+            });
 
-                entity.Property(x => x.Platform)
-                    .IsRequired()
-                    .HasMaxLength(100);
+            modelBuilder.Entity<Language>(entity =>
+            {
+                entity.HasKey(x => x.Id);
+                entity.Property(x => x.Name).IsRequired().HasMaxLength(100);
+                entity.Property(x => x.Level).HasMaxLength(100);
+                entity.Property(x => x.CreatedAt).IsRequired();
+            });
 
-                entity.Property(x => x.Url)
-                    .IsRequired()
-                    .HasMaxLength(500);
+            modelBuilder.Entity<Certificate>(entity =>
+            {
+                entity.HasKey(x => x.Id);
+                entity.Property(x => x.Name).IsRequired().HasMaxLength(200);
+                entity.Property(x => x.Issuer).IsRequired().HasMaxLength(200);
+                entity.Property(x => x.IssuedDate).IsRequired();
+                entity.Property(x => x.CredentialId).HasMaxLength(200);
+                entity.Property(x => x.CredentialUrl).HasMaxLength(500);
+                entity.Property(x => x.CreatedAt).IsRequired();
+            });
 
-                entity.Property(x => x.DisplayOrder)
-                    .IsRequired();
-
-                entity.Property(x => x.CreatedAt)
-                    .IsRequired();
+            modelBuilder.Entity<Hobby>(entity =>
+            {
+                entity.HasKey(x => x.Id);
+                entity.Property(x => x.Name).IsRequired().HasMaxLength(150);
+                entity.Property(x => x.Description).HasMaxLength(2000);
+                entity.Property(x => x.CreatedAt).IsRequired();
             });
         }
     }
