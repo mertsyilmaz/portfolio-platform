@@ -17,6 +17,13 @@
     <Project Path="src/Services/CV/CV.Domain/CV.Domain.csproj" Id="adecdd25-e39d-4c34-a915-9aff1ac51bb2" />
     <Project Path="src/Services/CV/CV.Infrastructure/CV.Infrastructure.csproj" Id="7c6a7905-a1da-44f9-9566-faac3719620b" />
   </Folder>
+  <Folder Name="/src/Services/File/">
+    <Project Path="src/Services/File/File.API/File.API.csproj" Id="b9890a44-2005-44aa-8782-e428d48454e8" />
+    <Project Path="src/Services/File/File.Application/File.Application.csproj" Id="16713243-cb89-410b-ac8c-a54ec4a9d567" />
+    <Project Path="src/Services/File/File.Contracts/File.Contracts.csproj" Id="21744b01-4fb5-4f95-9e3a-378ca497880a" />
+    <Project Path="src/Services/File/File.Domain/File.Domain.csproj" Id="bbed58e0-3a55-4f47-945a-bd93ebb8d88e" />
+    <Project Path="src/Services/File/File.Infrastructure/File.Infrastructure.csproj" Id="52498a43-f973-4cb9-a5a8-0f3e78d62339" />
+  </Folder>
   <Folder Name="/src/Services/Identity/">
     <Project Path="src/Services/Identity/Identity.API/Identity.API.csproj" Id="9c546cfd-acef-4ee7-97d6-b4dcd54c20b0" />
     <Project Path="src/Services/Identity/Identity.Application/Identity.Application.csproj" Id="38482618-15a6-460b-94fb-1f66cdee6ad4" />

@@ -2,6 +2,7 @@
 bin/
 obj/
 out/
+src/Services/File/File.API/uploads/
 
 # Visual Studio
 .vs/
