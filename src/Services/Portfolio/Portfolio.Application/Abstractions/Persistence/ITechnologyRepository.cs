@@ -9,6 +9,7 @@ namespace Portfolio.Application.Abstractions.Persistence
     {
         Task AddAsync(Technology technology);
         Task<List<Technology>> GetAllAsync();
+        Task<List<Technology>> GetByIdsAsync(List<Guid> ids);
         Task<Technology?> GetByIdAsync(Guid id);
         Task UpdateAsync(Technology technology);
         Task DeleteAsync(Technology technology);

@@ -9,6 +9,7 @@ namespace Portfolio.Application.Abstractions.Persistence
     {
         Task AddAsync(Category category);
         Task<List<Category>> GetAllAsync();
+        Task<List<Category>> GetByIdsAsync(List<Guid> ids);
         Task<Category?> GetByIdAsync(Guid id);
         Task UpdateAsync(Category category);
         Task DeleteAsync(Category category);

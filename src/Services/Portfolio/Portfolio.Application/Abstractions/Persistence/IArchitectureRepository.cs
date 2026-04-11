@@ -9,6 +9,7 @@ namespace Portfolio.Application.Abstractions.Persistence
     {
         Task AddAsync(Architecture architecture);
         Task<List<Architecture>> GetAllAsync();
+        Task<List<Architecture>> GetByIdsAsync(List<Guid> ids);
         Task<Architecture?> GetByIdAsync(Guid id);
         Task UpdateAsync(Architecture architecture);
         Task DeleteAsync(Architecture architecture);

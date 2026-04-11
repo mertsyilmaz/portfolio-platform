@@ -31,12 +31,23 @@ namespace Portfolio.Infrastructure.Repositories
 
         public async Task<List<Project>> GetAllAsync()
         {
-            return await _context.Projects.OrderBy(x => x.Name).ToListAsync();
+            return await _context.Projects
+                .Include(x => x.Categories)
+                .Include(x => x.Technologies)
+                .Include(x => x.Architectures)
+                .Include(x => x.Images)
+                .OrderBy(x => x.DisplayOrder)
+                .ToListAsync();
         }
 
         public async Task<Project?> GetByIdAsync(Guid id)
         {
-            return await _context.Projects.FirstOrDefaultAsync(x => x.Id == id);
+            return await _context.Projects
+                .Include(x => x.Categories)
+                .Include(x => x.Technologies)
+                .Include(x => x.Architectures)
+                .Include(x => x.Images)
+                .FirstOrDefaultAsync(x => x.Id == id);
         }
 
         public async Task UpdateAsync(Project project)

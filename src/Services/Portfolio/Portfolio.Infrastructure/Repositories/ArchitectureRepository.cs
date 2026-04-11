@@ -39,6 +39,16 @@ namespace Portfolio.Infrastructure.Repositories
             return await _context.Architectures.FirstOrDefaultAsync(x => x.Id == id);
         }
 
+        public async Task<List<Architecture>> GetByIdsAsync(List<Guid> ids)
+        {
+            if (ids is null || ids.Count == 0)
+                return new List<Architecture>();
+
+            return await _context.Architectures
+                .Where(x => ids.Contains(x.Id))
+                .ToListAsync();
+        }
+
         public async Task UpdateAsync(Architecture architecture)
         {
             _context.Architectures.Update(architecture);

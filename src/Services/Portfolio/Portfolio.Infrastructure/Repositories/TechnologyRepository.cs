@@ -39,6 +39,16 @@ namespace Portfolio.Infrastructure.Repositories
             return await _context.Technologies.FirstOrDefaultAsync(x => x.Id == id);
         }
 
+        public async Task<List<Technology>> GetByIdsAsync(List<Guid> ids)
+        {
+            if (ids is null || ids.Count == 0)
+                return new List<Technology>();
+
+            return await _context.Technologies
+                .Where(x => ids.Contains(x.Id))
+                .ToListAsync();
+        }
+
         public async Task UpdateAsync(Technology technology)
         {
             _context.Technologies.Update(technology);

@@ -1,5 +1,10 @@
 ﻿using Portfolio.Application.Abstractions.Persistence;
+using Portfolio.Contracts.Architectures;
+using Portfolio.Contracts.Categories;
+using Portfolio.Contracts.Images;
 using Portfolio.Contracts.Projects;
+using Portfolio.Contracts.Technologies;
+using Portfolio.Domain.Entities;
 using System;
 using System.Collections.Generic;
 using System.Text;
@@ -27,7 +32,35 @@ namespace Portfolio.Application.Projects
                 DisplayOrder = x.DisplayOrder,
                 GithubUrl = x.GithubUrl,
                 IsFeatured = x.IsFeatured,
-                ProjectUrl = x.ProjectUrl
+                ProjectUrl = x.ProjectUrl,
+
+                Categories = x.Categories.Select(x => new GetCategoriesResponse
+                {
+                    Id = x.Id,
+                    Name = x.Name
+                }).ToList(),
+
+                Technologies = x.Technologies.Select(x => new GetTechnologiesResponse
+                {
+                    Id = x.Id,
+                    Name = x.Name
+                }).ToList(),
+
+                Architectures = x.Architectures.Select(x => new GetArchitecturesResponse
+                {
+                    Id = x.Id,
+                    Name = x.Name
+                }).ToList(),
+
+                Images = x.Images.Select(x => new GetImagesResponse
+                {
+                    Id = x.Id,
+                    FileId = x.FileId,
+                    DisplayOrder = x.DisplayOrder,
+                    IsCover = x.IsCover,
+                    ProjectId = x.ProjectId
+                }).ToList()
+
             }).ToList();
         }
     }

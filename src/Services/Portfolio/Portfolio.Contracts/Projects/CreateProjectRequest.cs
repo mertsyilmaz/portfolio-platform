@@ -15,5 +15,9 @@ namespace Portfolio.Contracts.Projects
         public string GithubUrl { get; set; } = null!;
         public bool IsFeatured { get; set; }
         public int DisplayOrder { get; set; }
+
+        public List<Guid> CategoryIds { get; set; } = new();
+        public List<Guid> TechnologyIds { get; set; } = new();
+        public List<Guid> ArchitectureIds { get; set; } = new();
     }
 }

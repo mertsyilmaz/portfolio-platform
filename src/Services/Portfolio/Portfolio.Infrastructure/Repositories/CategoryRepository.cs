@@ -39,6 +39,16 @@ namespace Portfolio.Infrastructure.Repositories
             return await _context.Categories.FirstOrDefaultAsync(x => x.Id == id);
         }
 
+        public async Task<List<Category>> GetByIdsAsync(List<Guid> ids)
+        {
+            if (ids is null || ids.Count == 0)
+                return new List<Category>();
+
+            return await _context.Categories
+                .Where(x => ids.Contains(x.Id))
+                .ToListAsync();
+        }
+
         public async Task UpdateAsync(Category category)
         {
             _context.Categories.Update(category);
