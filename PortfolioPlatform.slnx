@@ -10,6 +10,13 @@
   <Folder Name="/src/ApiGateway/" />
   <Folder Name="/src/BuildingBlocks/" />
   <Folder Name="/src/Services/" />
+  <Folder Name="/src/Services/Blog/">
+    <Project Path="src/Services/Blog/Blog.API/Blog.API.csproj" Id="d67d7d73-5b1b-471a-a8f2-523ef96020f0" />
+    <Project Path="src/Services/Blog/Blog.Application/Blog.Application.csproj" Id="8242ba66-c3d7-4d11-bb65-56de65580081" />
+    <Project Path="src/Services/Blog/Blog.Contracts/Blog.Contracts.csproj" Id="5464ece0-f859-4c6b-8b25-0abc8671e635" />
+    <Project Path="src/Services/Blog/Blog.Domain/Blog.Domain.csproj" Id="7af00368-f97e-42b9-915e-8b62aed35085" />
+    <Project Path="src/Services/Blog/Blog.Infrastructure/Blog.Infrastructure.csproj" Id="9cb4a62e-de91-49a2-90a5-db416e66e4ae" />
+  </Folder>
   <Folder Name="/src/Services/CV/">
     <Project Path="src/Services/CV/CV.API/CV.API.csproj" Id="9f194369-bcb1-4e21-b4bc-bb007dd40ea0" />
     <Project Path="src/Services/CV/CV.Application/CV.Application.csproj" Id="495d9f88-a52d-4080-84d8-e9c0974ea221" />
@@ -30,6 +37,13 @@
     <Project Path="src/Services/Identity/Identity.Contracts/Identity.Contracts.csproj" Id="b575d553-0bf8-4433-8bd9-ef3b6495951c" />
     <Project Path="src/Services/Identity/Identity.Domain/Identity.Domain.csproj" Id="70f41dd7-2890-4dc5-a10c-18186c90e74f" />
     <Project Path="src/Services/Identity/Identity.Infrastructure/Identity.Infrastructure.csproj" Id="d51a941d-e156-484c-97a1-cc870dfbbdcf" />
+  </Folder>
+  <Folder Name="/src/Services/Portfolio/">
+    <Project Path="src/Services/Portfolio/Portfolio.API/Portfolio.API.csproj" Id="b17d4023-c533-48f4-be0c-0b005b81492f" />
+    <Project Path="src/Services/Portfolio/Portfolio.Application/Portfolio.Application.csproj" Id="268b28dc-62e2-4960-8ba7-5cd0e257252b" />
+    <Project Path="src/Services/Portfolio/Portfolio.Contracts/Portfolio.Contracts.csproj" Id="02c26457-db1a-46fc-afdb-4e23453b757b" />
+    <Project Path="src/Services/Portfolio/Portfolio.Domain/Portfolio.Domain.csproj" Id="5899e970-9744-4bb6-901f-735339e5a83c" />
+    <Project Path="src/Services/Portfolio/Portfolio.Infrastructure/Portfolio.Infrastructure.csproj" Id="96e5907c-818b-46c0-8fd4-ae658d8628a5" />
   </Folder>
   <Folder Name="/tests/" />
 </Solution>
