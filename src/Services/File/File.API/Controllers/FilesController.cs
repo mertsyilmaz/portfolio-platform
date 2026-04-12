@@ -26,7 +26,7 @@ namespace File.API.Controllers
         }
 
         [HttpPost("upload")]
-        public async Task<IActionResult> Upload(IFormFile file)
+        public async Task<IActionResult> Upload(IFormFile file, [FromForm] string folderName)
         {
             if (file is null || file.Length == 0)
                 return BadRequest("File is required.");
@@ -35,7 +35,8 @@ namespace File.API.Controllers
                 file.OpenReadStream(),
                 file.FileName,
                 file.ContentType,
-                file.Length);
+                file.Length,
+                folderName);
 
             return Ok(result);
         }

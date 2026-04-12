@@ -28,6 +28,7 @@ namespace File.Infrastructure.Persistence
                 entity.Property(x => x.Extension).IsRequired().HasMaxLength(20);
                 entity.Property(x => x.Size).IsRequired();
                 entity.Property(x => x.RelativePath).IsRequired().HasMaxLength(500);
+                entity.Property(x => x.FolderName).IsRequired();
                 entity.Property(x => x.CreatedAt).IsRequired();
             });
         }

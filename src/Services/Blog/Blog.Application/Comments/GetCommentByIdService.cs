@@ -29,7 +29,8 @@ namespace Blog.Application.Comments
                 AuthorId = comment.AuthorId,
                 Content = comment.Content,
                 IsApproved = comment.IsApproved,
-                CreatedAt = comment.CreatedAt
+                CreatedAt = comment.CreatedAt,
+                UpdatedAt = comment.UpdatedAt
             };
         }
     }

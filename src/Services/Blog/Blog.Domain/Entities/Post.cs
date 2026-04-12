@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Blog.Domain.Common;
+using System;
 using System.Collections.Generic;
 using System.Text;
 using System.Xml.Linq;
@@ -6,10 +7,8 @@ using static System.Net.Mime.MediaTypeNames;
 
 namespace Blog.Domain.Entities
 {
-    public class Post
+    public class Post : AuditableEntity
     {
-        public Guid Id { get; set; }
-
         public Guid AuthorId { get; set; }
 
         public string Title { get; set; } = null!;
@@ -22,8 +21,6 @@ namespace Blog.Domain.Entities
 
         public int DisplayOrder { get; set; }
 
-        public DateTime CreatedAt { get; set; }
-        public DateTime? UpdatedAt { get; set; }
         public DateTime? PublishedAt { get; set; }
 
         public Guid? CoverImageId { get; set; }

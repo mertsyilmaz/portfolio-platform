@@ -1,4 +1,5 @@
 ﻿using CV.Application.Abstractions.Persistence;
+using CV.Application.Abstractions.Services;
 using CV.Contracts.PersonalInfos;
 using System;
 using System.Collections.Generic;
@@ -9,10 +10,12 @@ namespace CV.Application.PersonalInfos
     public class UpdatePersonalInfoService : IUpdatePersonalInfoService
     {
         private readonly IPersonalInfoRepository _repository;
+        private readonly IFileService _fileService;
 
-        public UpdatePersonalInfoService(IPersonalInfoRepository repository)
+        public UpdatePersonalInfoService(IPersonalInfoRepository repository, IFileService fileService)
         {
             _repository = repository;
+            _fileService = fileService;
         }
 
         public async Task<UpdatePersonalInfoResponse?> UpdateAsync(UpdatePersonalInfoRequest request)
@@ -21,7 +24,15 @@ namespace CV.Application.PersonalInfos
 
             if (entity == null)
                 return null;
-            
+
+            if (request.ProfileImageId.HasValue)
+            {
+                var fileExists = await _fileService.ExistsAsync(request.ProfileImageId.Value);
+
+                if (!fileExists)
+                    throw new Exception("Profile image not found.");
+            }
+
             entity.Location = request.Location;
             entity.Summary = request.Summary;
             entity.FirstName = request.FirstName;

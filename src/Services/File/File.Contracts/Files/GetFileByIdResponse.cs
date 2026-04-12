@@ -19,6 +19,7 @@ namespace File.Contracts.Files
         public long Size { get; set; }
 
         public string RelativePath { get; set; } = null!;
+        public string FolderName { get; set; } = null!;
 
         public DateTime CreatedAt { get; set; }
     }

@@ -26,7 +26,8 @@ namespace Blog.Application.Comments
                 AuthorId = x.AuthorId,
                 Content = x.Content,
                 IsApproved = x.IsApproved,
-                CreatedAt = x.CreatedAt
+                CreatedAt = x.CreatedAt,
+                UpdatedAt = x.UpdatedAt
             }).ToList();
         }
     }

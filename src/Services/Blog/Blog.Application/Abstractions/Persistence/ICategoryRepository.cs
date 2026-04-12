@@ -5,13 +5,8 @@ using System.Text;
 
 namespace Blog.Application.Abstractions.Persistence
 {
-    public interface ICategoryRepository
+    public interface ICategoryRepository : IRepository<Category>
     {
-        Task AddAsync(Category category);
-        Task<List<Category>> GetAllAsync();
-        Task<Category?> GetByIdAsync(Guid id);
         Task<List<Category>> GetByIdsAsync(List<Guid> ids);
-        Task UpdateAsync(Category category);
-        Task DeleteAsync(Category category);
     }
 }

@@ -29,11 +29,12 @@ namespace File.Infrastructure.Storage
             return Task.CompletedTask;
         }
 
-        public async Task<(string StoredFileName, string RelativePath)> SaveAsync(Stream fileStream, string fileName)
+        public async Task<(string StoredFileName, string RelativePath)> SaveAsync(Stream fileStream,string fileName,string folderName)
         {
             var extension = Path.GetExtension(fileName);
             var storedFileName = $"{Guid.NewGuid()}{extension}";
-            var relativePath = Path.Combine("uploads", storedFileName);
+
+            var relativePath = Path.Combine("uploads", folderName, storedFileName);
             var fullPath = Path.Combine(Directory.GetCurrentDirectory(), relativePath);
 
             var directory = Path.GetDirectoryName(fullPath);

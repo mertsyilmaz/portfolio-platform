@@ -61,7 +61,8 @@ namespace Blog.Application.Posts
                     AuthorId = c.AuthorId,
                     Content = c.Content,
                     IsApproved = c.IsApproved,
-                    CreatedAt = c.CreatedAt
+                    CreatedAt = c.CreatedAt,
+                    UpdatedAt = c.UpdatedAt
                 }).ToList(),
 
                 Images = post.Images.Select(i => new GetImagesResponse

@@ -5,13 +5,8 @@ using System.Text;
 
 namespace Blog.Application.Abstractions.Persistence
 {
-    public interface ITagRepository
+    public interface ITagRepository : IRepository<Tag>
     {
-        Task AddAsync(Tag tag);
-        Task<List<Tag>> GetAllAsync();
-        Task<Tag?> GetByIdAsync(Guid id);
         Task<List<Tag>> GetByIdsAsync(List<Guid> ids);
-        Task UpdateAsync(Tag tag);
-        Task DeleteAsync(Tag tag);
     }
 }

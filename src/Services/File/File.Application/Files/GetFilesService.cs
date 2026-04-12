@@ -25,7 +25,8 @@ namespace File.Application.Files
                 FileName = x.FileName,
                 ContentType = x.ContentType,
                 Size = x.Size,
-                RelativePath = x.RelativePath
+                RelativePath = x.RelativePath,
+                FolderName = x.FolderName
             }).ToList();
         }
     }

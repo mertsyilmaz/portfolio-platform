@@ -31,6 +31,7 @@ namespace File.Application.Files
                 Extension = file.Extension,
                 Size = file.Size,
                 RelativePath = file.RelativePath,
+                FolderName = file.FolderName,
                 CreatedAt = file.CreatedAt
             };
         }

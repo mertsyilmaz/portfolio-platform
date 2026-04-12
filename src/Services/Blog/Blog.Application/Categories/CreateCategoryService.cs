@@ -1,4 +1,5 @@
-﻿using Blog.Application.Abstractions.Persistence;
+﻿using AutoMapper;
+using Blog.Application.Abstractions.Persistence;
 using Blog.Contracts.Categories;
 using Blog.Domain.Entities;
 using System;
@@ -10,10 +11,12 @@ namespace Blog.Application.Categories
     public class CreateCategoryService : ICreateCategoryService
     {
         private readonly ICategoryRepository _categoryRepository;
+        private readonly IMapper _mapper;
 
-        public CreateCategoryService(ICategoryRepository categoryRepository)
+        public CreateCategoryService(ICategoryRepository categoryRepository, IMapper mapper)
         {
             _categoryRepository = categoryRepository;
+            _mapper = mapper;
         }
 
         public async Task<CreateCategoryResponse> CreateAsync(CreateCategoryRequest request)
@@ -26,11 +29,7 @@ namespace Blog.Application.Categories
 
             await _categoryRepository.AddAsync(category);
 
-            return new CreateCategoryResponse
-            {
-                Id = category.Id,
-                Name = category.Name
-            };
+            return _mapper.Map<CreateCategoryResponse>(category);
         }
     }
 }

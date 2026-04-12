@@ -7,6 +7,8 @@ using Portfolio.Application.Projects;
 using Portfolio.Application.Technologies;
 using Portfolio.Infrastructure.Persistence;
 using Portfolio.Infrastructure.Repositories;
+using Portfolio.Application.Abstractions.Services;
+using Portfolio.Infrastructure.Services;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -18,6 +20,11 @@ builder.Services.AddSwaggerGen();
 
 builder.Services.AddDbContext<PortfolioDbContext>(options =>
     options.UseNpgsql(builder.Configuration.GetConnectionString("DefaultConnection")));
+
+builder.Services.AddHttpClient<IFileService, FileService>(client =>
+{
+    client.BaseAddress = new Uri(builder.Configuration["Services:File:BaseUrl"]!);
+});
 
 builder.Services.AddScoped<IProjectRepository, ProjectRepository>();
 builder.Services.AddScoped<ICreateProjectService, CreateProjectService>();

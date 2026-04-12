@@ -1,4 +1,5 @@
-﻿using Blog.Application.Abstractions.Persistence;
+﻿using AutoMapper;
+using Blog.Application.Abstractions.Persistence;
 using Blog.Contracts.Categories;
 using System;
 using System.Collections.Generic;
@@ -9,10 +10,12 @@ namespace Blog.Application.Categories
     public class UpdateCategoryService : IUpdateCategoryService
     {
         private readonly ICategoryRepository _categoryRepository;
+        private readonly IMapper _mapper;
 
-        public UpdateCategoryService(ICategoryRepository categoryRepository)
+        public UpdateCategoryService(ICategoryRepository categoryRepository, IMapper mapper)
         {
             _categoryRepository = categoryRepository;
+            _mapper = mapper;
         }
 
         public async Task<UpdateCategoryResponse?> UpdateAsync(Guid id, UpdateCategoryRequest request)
@@ -26,11 +29,7 @@ namespace Blog.Application.Categories
 
             await _categoryRepository.UpdateAsync(category);
 
-            return new UpdateCategoryResponse
-            {
-                Id = category.Id,
-                Name = category.Name
-            };
+            return _mapper.Map<UpdateCategoryResponse>(category);
         }
     }
 }

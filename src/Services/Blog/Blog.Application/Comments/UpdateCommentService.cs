@@ -23,6 +23,7 @@ namespace Blog.Application.Comments
                 return null;
 
             comment.Content = request.Content;
+            comment.UpdatedAt = DateTime.UtcNow;
 
             await _commentRepository.UpdateAsync(comment);
 
@@ -32,7 +33,8 @@ namespace Blog.Application.Comments
                 PostId = comment.PostId,
                 Content = comment.Content,
                 IsApproved = comment.IsApproved,
-                CreatedAt = comment.CreatedAt
+                CreatedAt = comment.CreatedAt,
+                UpdatedAt= comment.UpdatedAt
             };
         }
     }

@@ -5,6 +5,7 @@ using System.Collections.Generic;
 using System.Text;
 using DomainImageUsageType = Blog.Domain.Enums.ImageUsageType;
 using Blog.Domain.Entities;
+using Blog.Application.Abstractions.Services;
 
 namespace Blog.Application.Images
 {
@@ -12,13 +13,16 @@ namespace Blog.Application.Images
     {
         private readonly IImageRepository _imageRepository;
         private readonly IPostRepository _postRepository;
+        private readonly IFileService _fileService;
 
         public CreateImageService(
             IImageRepository imageRepository,
-            IPostRepository postRepository)
+            IPostRepository postRepository,
+            IFileService fileService)
         {
             _imageRepository = imageRepository;
             _postRepository = postRepository;
+            _fileService = fileService;
         }
 
         public async Task<CreateImageResponse> CreateAsync(CreateImageRequest request)
@@ -28,13 +32,19 @@ namespace Blog.Application.Images
             if (post == null)
                 throw new Exception("Post not found.");
 
+            var fileExists = await _fileService.ExistsAsync(request.FileId);
+
+            if (!fileExists)
+                throw new Exception("File not found.");
+
             var image = new Image
             {
                 Id = Guid.NewGuid(),
                 PostId = request.PostId,
                 FileId = request.FileId,
                 UsageType = (DomainImageUsageType)request.UsageType,
-                DisplayOrder = request.DisplayOrder
+                DisplayOrder = request.DisplayOrder,
+                CreatedAt = DateTime.UtcNow
             };
 
             await _imageRepository.AddAsync(image);

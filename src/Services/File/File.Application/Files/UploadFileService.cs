@@ -18,11 +18,19 @@ namespace File.Application.Files
             _fileStorageService = fileStorageService;
         }
 
-        public async Task<UploadFileResponse> UploadAsync(Stream fileStream, string fileName, string contentType, long size)
+        public async Task<UploadFileResponse> UploadAsync(Stream fileStream, string fileName, string contentType, long size, string folderName)
         {
             var extension = Path.GetExtension(fileName);
 
-            var (storedFileName, relativePath) = await _fileStorageService.SaveAsync(fileStream, fileName);
+            if (string.IsNullOrWhiteSpace(folderName))
+                throw new Exception("Folder name is required.");
+
+            var allowedFolders = new[] { "portfolio", "cv", "blog" };
+
+            if (!allowedFolders.Contains(folderName.ToLower()))
+                throw new Exception("Invalid folder name.");
+
+            var (storedFileName, relativePath) = await _fileStorageService.SaveAsync(fileStream, fileName, folderName);
 
             var entity = new FileRecord
             {
@@ -33,6 +41,7 @@ namespace File.Application.Files
                 Extension = extension,
                 Size = size,
                 RelativePath = relativePath,
+                FolderName = folderName,
                 CreatedAt = DateTime.UtcNow
             };
 
@@ -44,7 +53,8 @@ namespace File.Application.Files
                 FileName = entity.FileName,
                 ContentType = entity.ContentType,
                 Size = entity.Size,
-                RelativePath = entity.RelativePath
+                RelativePath = entity.RelativePath,
+                FolderName = entity.FolderName
             };
 
         }

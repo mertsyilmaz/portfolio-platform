@@ -38,9 +38,11 @@ namespace Blog.Infrastructure.Persistence
 
                 entity.HasIndex(x => x.Slug).IsUnique();
 
-                entity.HasMany(x => x.Categories).WithMany(x => x.Posts);
+                entity.HasMany(x => x.Categories)
+                    .WithMany(x => x.Posts);
 
-                entity.HasMany(x => x.Tags).WithMany(x => x.Posts);
+                entity.HasMany(x => x.Tags)
+                    .WithMany(x => x.Posts);
 
                 entity.HasMany(x => x.Comments)
                     .WithOne(x => x.Post)
@@ -56,14 +58,12 @@ namespace Blog.Infrastructure.Persistence
             modelBuilder.Entity<Category>(entity =>
             {
                 entity.HasKey(x => x.Id);
-
                 entity.Property(x => x.Name).IsRequired();
             });
 
             modelBuilder.Entity<Tag>(entity =>
             {
                 entity.HasKey(x => x.Id);
-
                 entity.Property(x => x.Name).IsRequired();
             });
 
@@ -86,6 +86,7 @@ namespace Blog.Infrastructure.Persistence
                 entity.Property(x => x.FileId).IsRequired();
                 entity.Property(x => x.UsageType).IsRequired();
                 entity.Property(x => x.DisplayOrder).IsRequired();
+                entity.Property(x => x.CreatedAt).IsRequired();
             });
         }
     }

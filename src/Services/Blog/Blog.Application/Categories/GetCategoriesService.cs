@@ -1,4 +1,5 @@
-﻿using Blog.Application.Abstractions.Persistence;
+﻿using AutoMapper;
+using Blog.Application.Abstractions.Persistence;
 using Blog.Contracts.Categories;
 using System;
 using System.Collections.Generic;
@@ -9,21 +10,19 @@ namespace Blog.Application.Categories
     public class GetCategoriesService : IGetCategoriesService
     {
         private readonly ICategoryRepository _categoryRepository;
+        private readonly IMapper _mapper;
 
-        public GetCategoriesService(ICategoryRepository categoryRepository)
+        public GetCategoriesService(ICategoryRepository categoryRepository, IMapper mapper)
         {
             _categoryRepository = categoryRepository;
+            _mapper = mapper;
         }
 
         public async Task<List<GetCategoriesResponse>> GetAllAsync()
         {
             var categories = await _categoryRepository.GetAllAsync();
 
-            return categories.Select(x => new GetCategoriesResponse
-            {
-                Id = x.Id,
-                Name = x.Name
-            }).ToList();
+            return _mapper.Map<List<GetCategoriesResponse>>(categories);
         }
     }
 }

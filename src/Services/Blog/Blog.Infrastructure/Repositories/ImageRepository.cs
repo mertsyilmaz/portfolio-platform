@@ -8,32 +8,17 @@ using Blog.Domain.Entities;
 
 namespace Blog.Infrastructure.Repositories
 {
-    public class ImageRepository : IImageRepository
+    public class ImageRepository : Repository<Image>, IImageRepository
     {
-        private readonly BlogDbContext _context;
-
-        public ImageRepository(BlogDbContext context)
+        public ImageRepository(BlogDbContext context) : base(context)
         {
-            _context = context;
         }
 
-        public async Task AddAsync(Image image)
-        {
-            await _context.Images.AddAsync(image);
-            await _context.SaveChangesAsync();
-        }
-
-        public async Task<List<Image>> GetAllAsync()
+        public override async Task<List<Image>> GetAllAsync()
         {
             return await _context.Images
                 .OrderBy(x => x.DisplayOrder)
                 .ToListAsync();
-        }
-
-        public async Task<Image?> GetByIdAsync(Guid id)
-        {
-            return await _context.Images
-                .FirstOrDefaultAsync(x => x.Id == id);
         }
 
         public async Task<List<Image>> GetByPostIdAsync(Guid postId)
@@ -42,18 +27,6 @@ namespace Blog.Infrastructure.Repositories
                 .Where(x => x.PostId == postId)
                 .OrderBy(x => x.DisplayOrder)
                 .ToListAsync();
-        }
-
-        public async Task UpdateAsync(Image image)
-        {
-            _context.Images.Update(image);
-            await _context.SaveChangesAsync();
-        }
-
-        public async Task DeleteAsync(Image image)
-        {
-            _context.Images.Remove(image);
-            await _context.SaveChangesAsync();
         }
     }
 }

@@ -8,22 +8,13 @@ using System.Text;
 
 namespace Blog.Infrastructure.Repositories
 {
-    public class PostRepository : IPostRepository
+    public class PostRepository : Repository<Post>, IPostRepository
     {
-        private readonly BlogDbContext _context;
-
-        public PostRepository(BlogDbContext context)
+        public PostRepository(BlogDbContext context) : base(context)
         {
-            _context = context;
         }
 
-        public async Task AddAsync(Post post)
-        {
-            await _context.Posts.AddAsync(post);
-            await _context.SaveChangesAsync();
-        }
-
-        public async Task<List<Post>> GetAllAsync()
+        public override async Task<List<Post>> GetAllAsync()
         {
             return await _context.Posts
                 .Include(x => x.Categories)
@@ -34,7 +25,7 @@ namespace Blog.Infrastructure.Repositories
                 .ToListAsync();
         }
 
-        public async Task<Post?> GetByIdAsync(Guid id)
+        public override async Task<Post?> GetByIdAsync(Guid id)
         {
             return await _context.Posts
                 .Include(x => x.Categories)
@@ -52,18 +43,6 @@ namespace Blog.Infrastructure.Repositories
                 .Include(x => x.Comments)
                 .Include(x => x.Images)
                 .FirstOrDefaultAsync(x => x.Slug == slug);
-        }
-
-        public async Task UpdateAsync(Post post)
-        {
-            _context.Posts.Update(post);
-            await _context.SaveChangesAsync();
-        }
-
-        public async Task DeleteAsync(Post post)
-        {
-            _context.Posts.Remove(post);
-            await _context.SaveChangesAsync();
         }
     }
 }

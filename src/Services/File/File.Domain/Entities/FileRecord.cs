@@ -20,6 +20,8 @@ namespace File.Domain.Entities
 
         public string RelativePath { get; set; } = null!;
 
+        public string FolderName { get; set; } = null!;
+
         public DateTime CreatedAt { get; set; }
     }
 }

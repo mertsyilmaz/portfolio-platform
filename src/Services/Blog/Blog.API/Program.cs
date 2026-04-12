@@ -1,11 +1,14 @@
 using Blog.Application.Abstractions.Persistence;
+using Blog.Application.Abstractions.Services;
 using Blog.Application.Categories;
 using Blog.Application.Comments;
+using Blog.Application.Common.Mappings;
 using Blog.Application.Images;
 using Blog.Application.Posts;
 using Blog.Application.Tags;
 using Blog.Infrastructure.Persistence;
 using Blog.Infrastructure.Repositories;
+using Blog.Infrastructure.Services;
 using Microsoft.EntityFrameworkCore;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -16,8 +19,15 @@ builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
+builder.Services.AddAutoMapper(typeof(BlogMappingProfile));
+
 builder.Services.AddDbContext<BlogDbContext>(options =>
     options.UseNpgsql(builder.Configuration.GetConnectionString("DefaultConnection")));
+
+builder.Services.AddHttpClient<IFileService, FileService>(client =>
+{
+    client.BaseAddress = new Uri(builder.Configuration["Services:File:BaseUrl"]!);
+});
 
 builder.Services.AddScoped<IPostRepository, PostRepository>();
 builder.Services.AddScoped<ICreatePostService, CreatePostService>();

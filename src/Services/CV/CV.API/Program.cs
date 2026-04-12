@@ -10,6 +10,8 @@ using CV.Application.SocialLinks;
 using CV.Infrastructure.Persistence;
 using CV.Infrastructure.Repositories;
 using Microsoft.EntityFrameworkCore;
+using CV.Application.Abstractions.Services;
+using CV.Infrastructure.Services;
 
 
 var builder = WebApplication.CreateBuilder(args);
@@ -22,6 +24,11 @@ builder.Services.AddSwaggerGen();
 
 builder.Services.AddDbContext<CvDbContext>(options =>
     options.UseNpgsql(builder.Configuration.GetConnectionString("DefaultConnection")));
+
+builder.Services.AddHttpClient<IFileService, FileService>(client =>
+{
+    client.BaseAddress = new Uri(builder.Configuration["Services:File:BaseUrl"]!);
+});
 
 builder.Services.AddScoped<IExperienceRepository, ExperienceRepository>();
 builder.Services.AddScoped<ICreateExperienceService,CreateExperienceService>();
