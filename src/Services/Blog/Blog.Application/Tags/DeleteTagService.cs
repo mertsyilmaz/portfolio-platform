@@ -1,4 +1,5 @@
 ﻿using Blog.Application.Abstractions.Persistence;
+using Blog.Application.Common.Exceptions;
 using Blog.Contracts.Tags;
 using System;
 using System.Collections.Generic;
@@ -15,12 +16,12 @@ namespace Blog.Application.Tags
             _tagRepository = tagRepository;
         }
 
-        public async Task<DeleteTagResponse?> DeleteAsync(Guid id)
+        public async Task<DeleteTagResponse> DeleteAsync(Guid id)
         {
             var tag = await _tagRepository.GetByIdAsync(id);
 
             if (tag == null)
-                return null;
+                throw new NotFoundException("Tag not found.");
 
             await _tagRepository.DeleteAsync(tag);
 

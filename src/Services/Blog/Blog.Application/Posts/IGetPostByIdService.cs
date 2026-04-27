@@ -7,6 +7,6 @@ namespace Blog.Application.Posts
 {
     public interface IGetPostByIdService
     {
-        Task<GetPostByIdResponse?> GetByIdAsync(Guid id);
+        Task<GetPostByIdResponse> GetByIdAsync(Guid id);
     }
 }

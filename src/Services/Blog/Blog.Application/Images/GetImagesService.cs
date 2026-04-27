@@ -1,33 +1,29 @@
-﻿using Blog.Application.Abstractions.Persistence;
+﻿using AutoMapper;
+using Blog.Application.Abstractions.Persistence;
 using Blog.Contracts.Images;
 using System;
 using System.Collections.Generic;
 using System.Text;
-using ContractImageUsageType = Blog.Contracts.Enums.ImageUsageType;
+
 
 namespace Blog.Application.Images
 {
     public class GetImagesService : IGetImagesService
     {
         private readonly IImageRepository _imageRepository;
+        private readonly IMapper _mapper;
 
-        public GetImagesService(IImageRepository imageRepository)
+        public GetImagesService(IImageRepository imageRepository, IMapper mapper)
         {
             _imageRepository = imageRepository;
+            _mapper = mapper;
         }
 
         public async Task<List<GetImagesResponse>> GetAllAsync()
         {
             var images = await _imageRepository.GetAllAsync();
 
-            return images.Select(x => new GetImagesResponse
-            {
-                Id = x.Id,
-                PostId = x.PostId,
-                FileId = x.FileId,
-                UsageType = (ContractImageUsageType)x.UsageType,
-                DisplayOrder = x.DisplayOrder
-            }).ToList();
+            return _mapper.Map<List<GetImagesResponse>>(images);
         }
     }
 }

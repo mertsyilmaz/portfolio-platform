@@ -1,36 +1,33 @@
-﻿using Blog.Application.Abstractions.Persistence;
+﻿using AutoMapper;
+using Blog.Application.Abstractions.Persistence;
+using Blog.Application.Common.Exceptions;
 using Blog.Contracts.Images;
 using System;
 using System.Collections.Generic;
 using System.Text;
-using ContractImageUsageType = Blog.Contracts.Enums.ImageUsageType;
+
 
 namespace Blog.Application.Images
 {
     public class GetImageByIdService : IGetImageByIdService
     {
         private readonly IImageRepository _imageRepository;
+        private readonly IMapper _mapper;
 
-        public GetImageByIdService(IImageRepository imageRepository)
+        public GetImageByIdService(IImageRepository imageRepository, IMapper mapper)
         {
             _imageRepository = imageRepository;
+            _mapper = mapper;
         }
 
-        public async Task<GetImagesResponse?> GetByIdAsync(Guid id)
+        public async Task<GetImagesResponse> GetByIdAsync(Guid id)
         {
             var image = await _imageRepository.GetByIdAsync(id);
 
             if (image == null)
-                return null;
+                throw new NotFoundException("Image not found.");
 
-            return new GetImagesResponse
-            {
-                Id = image.Id,
-                PostId = image.PostId,
-                FileId = image.FileId,
-                UsageType = (ContractImageUsageType)image.UsageType,
-                DisplayOrder = image.DisplayOrder
-            };
+            return _mapper.Map<GetImagesResponse>(image);
         }
     }
 }

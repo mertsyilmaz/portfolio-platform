@@ -7,6 +7,6 @@ namespace Blog.Application.Tags
 {
     public interface IDeleteTagService
     {
-        Task<DeleteTagResponse?> DeleteAsync(Guid id);
+        Task<DeleteTagResponse> DeleteAsync(Guid id);
     }
 }

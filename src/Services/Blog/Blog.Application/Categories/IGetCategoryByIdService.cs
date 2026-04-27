@@ -7,6 +7,6 @@ namespace Blog.Application.Categories
 {
     public interface IGetCategoryByIdService
     {
-        Task<GetCategoriesResponse?> GetByIdAsync(Guid id);
+        Task<GetCategoriesResponse> GetByIdAsync(Guid id);
     }
 }

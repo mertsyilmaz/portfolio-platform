@@ -1,4 +1,6 @@
-﻿using Blog.Application.Abstractions.Persistence;
+﻿using AutoMapper;
+using Blog.Application.Abstractions.Persistence;
+using Blog.Application.Common.Exceptions;
 using Blog.Contracts.Comments;
 using System;
 using System.Collections.Generic;
@@ -9,29 +11,22 @@ namespace Blog.Application.Comments
     public class GetCommentByIdService : IGetCommentByIdService
     {
         private readonly ICommentRepository _commentRepository;
+        private readonly IMapper _mapper;
 
-        public GetCommentByIdService(ICommentRepository commentRepository)
+        public GetCommentByIdService(ICommentRepository commentRepository, IMapper mapper)
         {
             _commentRepository = commentRepository;
+            _mapper = mapper;
         }
 
-        public async Task<GetCommentsResponse?> GetByIdAsync(Guid id)
+        public async Task<GetCommentsResponse> GetByIdAsync(Guid id)
         {
             var comment = await _commentRepository.GetByIdAsync(id);
 
             if (comment == null)
-                return null;
+                throw new NotFoundException("Comment not found.");
 
-            return new GetCommentsResponse
-            {
-                Id = comment.Id,
-                PostId = comment.PostId,
-                AuthorId = comment.AuthorId,
-                Content = comment.Content,
-                IsApproved = comment.IsApproved,
-                CreatedAt = comment.CreatedAt,
-                UpdatedAt = comment.UpdatedAt
-            };
+            return _mapper.Map<GetCommentsResponse>(comment);
         }
     }
 }

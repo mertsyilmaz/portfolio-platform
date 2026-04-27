@@ -21,11 +21,7 @@ namespace Blog.Application.Categories
 
         public async Task<CreateCategoryResponse> CreateAsync(CreateCategoryRequest request)
         {
-            var category = new Category
-            {
-                Id = Guid.NewGuid(),
-                Name = request.Name
-            };
+            var category = _mapper.Map<Category>(request);
 
             await _categoryRepository.AddAsync(category);
 

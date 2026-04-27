@@ -7,6 +7,6 @@ namespace Blog.Application.Comments
 {
     public interface IGetCommentByIdService
     {
-        Task<GetCommentsResponse?> GetByIdAsync(Guid id);
+        Task<GetCommentsResponse> GetByIdAsync(Guid id);
     }
 }

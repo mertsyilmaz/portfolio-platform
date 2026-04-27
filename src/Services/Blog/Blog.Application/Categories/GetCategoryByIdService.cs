@@ -1,5 +1,6 @@
 ﻿using AutoMapper;
 using Blog.Application.Abstractions.Persistence;
+using Blog.Application.Common.Exceptions;
 using Blog.Contracts.Categories;
 using System;
 using System.Collections.Generic;
@@ -18,12 +19,12 @@ namespace Blog.Application.Categories
             _mapper = mapper;
         }
 
-        public async Task<GetCategoriesResponse?> GetByIdAsync(Guid id)
+        public async Task<GetCategoriesResponse> GetByIdAsync(Guid id)
         {
             var category = await _categoryRepository.GetByIdAsync(id);
 
             if (category == null)
-                return null;
+                throw new NotFoundException("Category not found.");
 
             return _mapper.Map<GetCategoriesResponse>(category);
         }

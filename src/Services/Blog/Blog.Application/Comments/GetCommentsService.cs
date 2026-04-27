@@ -1,4 +1,5 @@
-﻿using Blog.Application.Abstractions.Persistence;
+﻿using AutoMapper;
+using Blog.Application.Abstractions.Persistence;
 using Blog.Contracts.Comments;
 using System;
 using System.Collections.Generic;
@@ -9,26 +10,19 @@ namespace Blog.Application.Comments
     public class GetCommentsService : IGetCommentsService
     {
         private readonly ICommentRepository _commentRepository;
+        private readonly IMapper _mapper;
 
-        public GetCommentsService(ICommentRepository commentRepository)
+        public GetCommentsService(ICommentRepository commentRepository, IMapper mapper)
         {
             _commentRepository = commentRepository;
+            _mapper = mapper;
         }
 
         public async Task<List<GetCommentsResponse>> GetAllAsync()
         {
             var comments = await _commentRepository.GetAllAsync();
 
-            return comments.Select(x => new GetCommentsResponse
-            {
-                Id = x.Id,
-                PostId = x.PostId,
-                AuthorId = x.AuthorId,
-                Content = x.Content,
-                IsApproved = x.IsApproved,
-                CreatedAt = x.CreatedAt,
-                UpdatedAt = x.UpdatedAt
-            }).ToList();
+            return _mapper.Map<List<GetCommentsResponse>>(comments);
         }
     }
 }

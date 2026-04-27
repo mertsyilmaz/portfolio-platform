@@ -7,6 +7,6 @@ namespace Blog.Application.Images
 {
     public interface IDeleteImageService
     {
-        Task<DeleteImageResponse?> DeleteAsync(Guid id);
+        Task<DeleteImageResponse> DeleteAsync(Guid id);
     }
 }

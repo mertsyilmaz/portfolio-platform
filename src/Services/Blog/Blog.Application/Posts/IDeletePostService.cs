@@ -7,6 +7,6 @@ namespace Blog.Application.Posts
 {
     public interface IDeletePostService
     {
-        Task<DeletePostResponse?> DeleteAsync(Guid id);
+        Task<DeletePostResponse> DeleteAsync(Guid id);
     }
 }

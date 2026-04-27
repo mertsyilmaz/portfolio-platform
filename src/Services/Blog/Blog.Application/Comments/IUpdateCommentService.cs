@@ -7,6 +7,6 @@ namespace Blog.Application.Comments
 {
     public interface IUpdateCommentService
     {
-        Task<UpdateCommentResponse?> UpdateAsync(Guid id, UpdateCommentRequest request);
+        Task<UpdateCommentResponse> UpdateAsync(Guid id, UpdateCommentRequest request);
     }
 }

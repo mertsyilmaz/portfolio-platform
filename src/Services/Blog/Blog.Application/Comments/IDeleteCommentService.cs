@@ -7,6 +7,6 @@ namespace Blog.Application.Comments
 {
     public interface IDeleteCommentService
     {
-        Task<DeleteCommentResponse?> DeleteAsync(Guid id);
+        Task<DeleteCommentResponse> DeleteAsync(Guid id);
     }
 }

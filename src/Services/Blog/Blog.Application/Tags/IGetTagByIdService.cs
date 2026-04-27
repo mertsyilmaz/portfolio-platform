@@ -7,6 +7,6 @@ namespace Blog.Application.Tags
 {
     public interface IGetTagByIdService
     {
-        Task<GetTagsResponse?> GetByIdAsync(Guid id);
+        Task<GetTagsResponse> GetByIdAsync(Guid id);
     }
 }

@@ -1,4 +1,5 @@
 ﻿using Blog.Application.Abstractions.Persistence;
+using Blog.Application.Common.Exceptions;
 using Blog.Contracts.Images;
 using System;
 using System.Collections.Generic;
@@ -15,12 +16,12 @@ namespace Blog.Application.Images
             _imageRepository = imageRepository;
         }
 
-        public async Task<DeleteImageResponse?> DeleteAsync(Guid id)
+        public async Task<DeleteImageResponse> DeleteAsync(Guid id)
         {
             var image = await _imageRepository.GetByIdAsync(id);
 
             if (image == null)
-                return null;
+                throw new NotFoundException("Image not found.");
 
             await _imageRepository.DeleteAsync(image);
 

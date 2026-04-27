@@ -7,6 +7,6 @@ namespace Blog.Application.Images
 {
     public interface IGetImageByIdService
     {
-        Task<GetImagesResponse?> GetByIdAsync(Guid id);
+        Task<GetImagesResponse> GetByIdAsync(Guid id);
     }
 }

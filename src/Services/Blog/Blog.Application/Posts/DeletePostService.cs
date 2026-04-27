@@ -1,4 +1,5 @@
 ﻿using Blog.Application.Abstractions.Persistence;
+using Blog.Application.Common.Exceptions;
 using Blog.Contracts.Posts;
 using System;
 using System.Collections.Generic;
@@ -15,12 +16,12 @@ namespace Blog.Application.Posts
             _postRepository = postRepository;
         }
 
-        public async Task<DeletePostResponse?> DeleteAsync(Guid id)
+        public async Task<DeletePostResponse> DeleteAsync(Guid id)
         {
             var post = await _postRepository.GetByIdAsync(id);
 
             if (post == null)
-                return null;
+                throw new NotFoundException("Post not found");
 
             await _postRepository.DeleteAsync(post);
 

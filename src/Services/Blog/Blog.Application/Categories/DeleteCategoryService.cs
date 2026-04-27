@@ -1,4 +1,5 @@
 ﻿using Blog.Application.Abstractions.Persistence;
+using Blog.Application.Common.Exceptions;
 using Blog.Contracts.Categories;
 using System;
 using System.Collections.Generic;
@@ -15,12 +16,12 @@ namespace Blog.Application.Categories
             _categoryRepository = categoryRepository;
         }
 
-        public async Task<DeleteCategoryResponse?> DeleteAsync(Guid id)
+        public async Task<DeleteCategoryResponse> DeleteAsync(Guid id)
         {
             var category = await _categoryRepository.GetByIdAsync(id);
 
             if (category == null)
-                return null;
+                throw new NotFoundException("Category not found.");
 
             await _categoryRepository.DeleteAsync(category);
 

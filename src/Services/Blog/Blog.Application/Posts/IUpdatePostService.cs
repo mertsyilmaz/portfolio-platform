@@ -7,6 +7,6 @@ namespace Blog.Application.Posts
 {
     public interface IUpdatePostService
     {
-        Task<UpdatePostResponse?> UpdateAsync(Guid id, UpdatePostRequest request);
+        Task<UpdatePostResponse> UpdateAsync(Guid id, UpdatePostRequest request);
     }
 }

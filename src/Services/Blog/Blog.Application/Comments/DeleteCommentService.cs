@@ -1,4 +1,5 @@
 ﻿using Blog.Application.Abstractions.Persistence;
+using Blog.Application.Common.Exceptions;
 using Blog.Contracts.Comments;
 using System;
 using System.Collections.Generic;
@@ -15,12 +16,12 @@ namespace Blog.Application.Comments
             _commentRepository = commentRepository;
         }
 
-        public async Task<DeleteCommentResponse?> DeleteAsync(Guid id)
+        public async Task<DeleteCommentResponse> DeleteAsync(Guid id)
         {
             var comment = await _commentRepository.GetByIdAsync(id);
 
             if (comment == null)
-                return null;
+                throw new NotFoundException("Comment not found.");
 
             await _commentRepository.DeleteAsync(comment);
 

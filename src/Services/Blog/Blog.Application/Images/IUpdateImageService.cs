@@ -7,6 +7,6 @@ namespace Blog.Application.Images
 {
     public interface IUpdateImageService
     {
-        Task<UpdateImageResponse?> UpdateAsync(Guid id, UpdateImageRequest request);
+        Task<UpdateImageResponse> UpdateAsync(Guid id, UpdateImageRequest request);
     }
 }

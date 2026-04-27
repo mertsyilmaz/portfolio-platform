@@ -1,4 +1,6 @@
-﻿using Blog.Application.Abstractions.Persistence;
+﻿using AutoMapper;
+using Blog.Application.Abstractions.Persistence;
+using Blog.Application.Common.Exceptions;
 using Blog.Contracts.Tags;
 using System;
 using System.Collections.Generic;
@@ -9,28 +11,26 @@ namespace Blog.Application.Tags
     public class UpdateTagService : IUpdateTagService
     {
         private readonly ITagRepository _tagRepository;
+        private readonly IMapper _mapper;
 
-        public UpdateTagService(ITagRepository tagRepository)
+        public UpdateTagService(ITagRepository tagRepository, IMapper mapper)
         {
             _tagRepository = tagRepository;
+            _mapper = mapper;
         }
 
-        public async Task<UpdateTagResponse?> UpdateAsync(Guid id, UpdateTagRequest request)
+        public async Task<UpdateTagResponse> UpdateAsync(Guid id, UpdateTagRequest request)
         {
             var tag = await _tagRepository.GetByIdAsync(id);
 
             if (tag == null)
-                return null;
+                throw new NotFoundException("Tag not found.");
 
-            tag.Name = request.Name;
+            _mapper.Map(request, tag);
 
             await _tagRepository.UpdateAsync(tag);
 
-            return new UpdateTagResponse
-            {
-                Id = tag.Id,
-                Name = tag.Name
-            };
+            return _mapper.Map<UpdateTagResponse>(tag);
         }
     }
 }

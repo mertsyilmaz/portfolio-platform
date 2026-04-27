@@ -51,9 +51,6 @@ namespace Blog.API.Controllers
         {
             var result = await _getImageByIdService.GetByIdAsync(id);
 
-            if (result == null)
-                return NotFound();
-
             return Ok(result);
         }
 
@@ -69,9 +66,6 @@ namespace Blog.API.Controllers
         {
             var result = await _updateImageService.UpdateAsync(id, request);
 
-            if (result == null)
-                return NotFound();
-
             return Ok(result);
         }
 
@@ -79,9 +73,6 @@ namespace Blog.API.Controllers
         public async Task<IActionResult> Delete(Guid id)
         {
             var result = await _deleteImageService.DeleteAsync(id);
-
-            if (result == null)
-                return NotFound();
 
             return Ok(result);
         }

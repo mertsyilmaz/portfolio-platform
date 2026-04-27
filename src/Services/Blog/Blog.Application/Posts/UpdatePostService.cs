@@ -1,5 +1,7 @@
-﻿using Blog.Application.Abstractions.Persistence;
+﻿using AutoMapper;
+using Blog.Application.Abstractions.Persistence;
 using Blog.Application.Abstractions.Services;
+using Blog.Application.Common.Exceptions;
 using Blog.Contracts.Posts;
 using System;
 using System.Collections.Generic;
@@ -13,76 +15,62 @@ namespace Blog.Application.Posts
         private readonly ICategoryRepository _categoryRepository;
         private readonly ITagRepository _tagRepository;
         private readonly IFileService _fileService;
+        private readonly IMapper _mapper;
 
         public UpdatePostService(
             IPostRepository postRepository,
             ICategoryRepository categoryRepository,
             ITagRepository tagRepository,
-            IFileService fileService)
+            IFileService fileService,
+            IMapper mapper)
         {
             _postRepository = postRepository;
             _categoryRepository = categoryRepository;
             _tagRepository = tagRepository;
             _fileService = fileService;
+            _mapper = mapper;
         }
 
-        public async Task<UpdatePostResponse?> UpdateAsync(Guid id, UpdatePostRequest request)
+        public async Task<UpdatePostResponse> UpdateAsync(Guid id, UpdatePostRequest request)
         {
             var post = await _postRepository.GetByIdAsync(id);
 
             if (post == null)
-                return null;
+                throw new NotFoundException("Post not found");
 
             if (request.CoverImageId.HasValue)
             {
                 var fileExists = await _fileService.ExistsAsync(request.CoverImageId.Value);
 
                 if (!fileExists)
-                    throw new Exception("Cover image not found.");
+                    throw new ValidationException("Cover image not found.");
             }
 
             var categories = await _categoryRepository.GetByIdsAsync(request.CategoryIds);
             var tags = await _tagRepository.GetByIdsAsync(request.TagIds);
 
-            post.Title = request.Title;
-            post.Slug = request.Slug;
-            post.Summary = request.Summary;
-            post.Content = request.Content;
-            post.IsPublished = request.IsPublished;
-            post.IsFeatured = request.IsFeatured;
-            post.DisplayOrder = request.DisplayOrder;
-            post.CoverImageId = request.CoverImageId;
+            if (categories.Count != request.CategoryIds.Count)
+                throw new ValidationException("One or more category ids are invalid.");
+
+            if (tags.Count != request.TagIds.Count)
+                throw new ValidationException("One or more tag ids are invalid.");
+
+            _mapper.Map(request, post);
+
             post.UpdatedAt = DateTime.UtcNow;
 
             if (request.IsPublished && post.PublishedAt == null)
-            {
                 post.PublishedAt = DateTime.UtcNow;
-            }
 
             if (!request.IsPublished)
-            {
                 post.PublishedAt = null;
-            }
 
             post.Categories = categories;
             post.Tags = tags;
 
             await _postRepository.UpdateAsync(post);
 
-            return new UpdatePostResponse
-            {
-                Id = post.Id,
-                Title = post.Title,
-                Slug = post.Slug,
-                Summary = post.Summary,
-                Content = post.Content,
-                IsPublished = post.IsPublished,
-                IsFeatured = post.IsFeatured,
-                DisplayOrder = post.DisplayOrder,
-                CoverImageId = post.CoverImageId,
-                UpdatedAt = post.UpdatedAt,
-                PublishedAt = post.PublishedAt
-            };
+            return _mapper.Map<UpdatePostResponse>(post);
         }
     }
 }
