@@ -1,34 +1,22 @@
-﻿using CV.Application.Abstractions.Persistence;
-using CV.Contracts.Hobbies;
-using System;
-using System.Collections.Generic;
-using System.Text;
+using CV.Application.Abstractions.Persistence;
+using CV.Application.Common.Exceptions;
 
 namespace CV.Application.Hobbies
 {
     public class DeleteHobbyService : IDeleteHobbyService
     {
-        private readonly IHobbyRepository _repository;
+        private readonly IHobbyRepository _hobbyRepository;
 
-        public DeleteHobbyService(IHobbyRepository repository)
+        public DeleteHobbyService(IHobbyRepository hobbyRepository)
         {
-            _repository = repository;
+            _hobbyRepository = hobbyRepository;
         }
 
-        public async Task<DeleteHobbyResponse?> DeleteAsync(Guid id)
+        public async Task DeleteAsync(Guid id)
         {
-            var hobby = await _repository.GetByIdAsync(id);
-
-            if (hobby == null) 
-                return null;
-
-            await _repository.DeleteAsync(hobby);
-
-            return new DeleteHobbyResponse
-            {
-                Id = id,
-                IsDeleted = true
-            };
+            var hobby = await _hobbyRepository.GetByIdAsync(id);
+            Guard.AgainstNotFound(hobby, ErrorMessages.HobbyNotFound);
+            await _hobbyRepository.DeleteAsync(hobby);
         }
     }
 }

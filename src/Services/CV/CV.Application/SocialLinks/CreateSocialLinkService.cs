@@ -1,40 +1,26 @@
-﻿using CV.Application.Abstractions.Persistence;
+using AutoMapper;
+using CV.Application.Abstractions.Persistence;
 using CV.Contracts.SocialLinks;
 using CV.Domain.Entities;
-using System;
-using System.Collections.Generic;
-using System.Text;
 
 namespace CV.Application.SocialLinks
 {
     public class CreateSocialLinkService : ICreateSocialLinkService
     {
-        private readonly ISocialLinkRepository _repository;
+        private readonly ISocialLinkRepository _socialLinkRepository;
+        private readonly IMapper _mapper;
 
-        public CreateSocialLinkService(ISocialLinkRepository repository)
+        public CreateSocialLinkService(ISocialLinkRepository socialLinkRepository, IMapper mapper)
         {
-            _repository = repository;
+            _socialLinkRepository = socialLinkRepository;
+            _mapper = mapper;
         }
 
         public async Task<CreateSocialLinkResponse> CreateAsync(CreateSocialLinkRequest request)
         {
-            var entity = new SocialLink
-            {
-                Id = Guid.NewGuid(),
-                Platform = request.Platform,
-                Url = request.Url,
-                DisplayOrder = request.DisplayOrder,
-                CreatedAt = DateTime.UtcNow
-            };
-
-            await _repository.AddAsync(entity);
-
-            return new CreateSocialLinkResponse
-            {
-                Id = entity.Id,
-                Platform = entity.Platform,
-                Url = entity.Url
-            };
+            var socialLink = _mapper.Map<SocialLink>(request);
+            await _socialLinkRepository.AddAsync(socialLink);
+            return _mapper.Map<CreateSocialLinkResponse>(socialLink);
         }
     }
 }

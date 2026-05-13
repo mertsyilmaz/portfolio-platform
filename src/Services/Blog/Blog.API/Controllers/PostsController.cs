@@ -1,6 +1,5 @@
 ﻿using Blog.Application.Posts;
 using Blog.Contracts.Posts;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Blog.API.Controllers
@@ -33,7 +32,7 @@ namespace Blog.API.Controllers
         public async Task<IActionResult> Create(CreatePostRequest request)
         {
             var result = await _createPostService.CreateAsync(request);
-            return Ok(result);
+            return CreatedAtAction(nameof(GetById), new { id = result.Id }, result);
         }
 
         [HttpGet]
@@ -62,9 +61,9 @@ namespace Blog.API.Controllers
         [HttpDelete("{id:guid}")]
         public async Task<IActionResult> Delete(Guid id)
         {
-            var result = await _deletePostService.DeleteAsync(id);
+            await _deletePostService.DeleteAsync(id);
 
-            return Ok(result);
+            return NoContent();
         }
     }
 }

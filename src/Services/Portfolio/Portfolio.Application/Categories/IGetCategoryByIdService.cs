@@ -1,12 +1,9 @@
-﻿using Portfolio.Contracts.Categories;
-using System;
-using System.Collections.Generic;
-using System.Text;
+using Portfolio.Contracts.Categories;
 
 namespace Portfolio.Application.Categories
 {
     public interface IGetCategoryByIdService
     {
-        Task<GetCategoryByIdResponse?> GetByIdAsync(Guid id);
+        Task<GetCategoryByIdResponse> GetByIdAsync(Guid id);
     }
 }

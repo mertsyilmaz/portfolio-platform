@@ -1,12 +1,9 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
+using Portfolio.Domain.Common;
 
 namespace Portfolio.Domain.Entities
 {
-    public class Project
+    public class Project : CreatableEntity
     {
-        public Guid Id { get; set; }
         public string Name { get; set; } = null!;
         public string Summary { get; set; } = null!;
         public string Description { get; set; } = null!;
@@ -14,7 +11,6 @@ namespace Portfolio.Domain.Entities
         public string GithubUrl { get; set; } = null!;
         public bool IsFeatured { get; set; }
         public int DisplayOrder { get; set; }
-        public DateTime CreatedAt { get; set; }
 
         public List<Category> Categories { get; set; } = new();
         public List<Technology> Technologies { get; set; } = new();

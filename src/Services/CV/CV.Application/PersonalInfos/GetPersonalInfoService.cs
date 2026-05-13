@@ -1,42 +1,24 @@
-﻿using CV.Application.Abstractions.Persistence;
+using AutoMapper;
+using CV.Application.Abstractions.Rules;
 using CV.Contracts.PersonalInfos;
-using System;
-using System.Collections.Generic;
-using System.Text;
 
 namespace CV.Application.PersonalInfos
 {
     public class GetPersonalInfoService : IGetPersonalInfosService
     {
-        private readonly IPersonalInfoRepository _repository;
+        private readonly ICvReferenceValidationService _referenceValidationService;
+        private readonly IMapper _mapper;
 
-        public GetPersonalInfoService(IPersonalInfoRepository repository)
+        public GetPersonalInfoService(ICvReferenceValidationService referenceValidationService, IMapper mapper)
         {
-            _repository = repository;
+            _referenceValidationService = referenceValidationService;
+            _mapper = mapper;
         }
 
-        public async Task<GetPersonalInfoResponse?> GetAsync()
+        public async Task<GetPersonalInfoResponse> GetAsync()
         {
-            var entity = await _repository.GetAsync();
-
-            if(entity == null)
-                return null;
-
-            return new GetPersonalInfoResponse
-            {
-                Id = entity.Id,
-                FirstName = entity.FirstName,
-                LastName = entity.LastName,
-                Title = entity.Title,
-                Summary = entity.Summary,
-                Email = entity.Email,
-                Phone = entity.Phone,
-                Location = entity.Location,
-                ProfileImageId = entity.ProfileImageId,
-                CreatedAt = entity.CreatedAt,
-                UpdatedAt = entity.UpdatedAt
-            };
-            
+            var entity = await _referenceValidationService.GetRequiredPersonalInfoAsync();
+            return _mapper.Map<GetPersonalInfoResponse>(entity);
         }
     }
 }

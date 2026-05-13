@@ -1,34 +1,23 @@
-﻿using Portfolio.Application.Abstractions.Persistence;
-using Portfolio.Contracts.Projects;
-using System;
-using System.Collections.Generic;
-using System.Text;
+using Portfolio.Application.Abstractions.Persistence;
+using Portfolio.Application.Common.Exceptions;
 
 namespace Portfolio.Application.Projects
 {
     public class DeleteProjectService : IDeleteProjectService
     {
-        private readonly IProjectRepository _repository;
+        private readonly IProjectRepository _projectRepository;
 
-        public DeleteProjectService(IProjectRepository repository)
+        public DeleteProjectService(IProjectRepository projectRepository)
         {
-            _repository = repository;
+            _projectRepository = projectRepository;
         }
 
-        public async Task<DeleteProjectResponse?> DeleteAsync(Guid id)
+        public async Task DeleteAsync(Guid id)
         {
-            var project = await _repository.GetByIdAsync(id);
+            var project = await _projectRepository.GetByIdAsync(id);
+            Guard.AgainstNotFound(project, ErrorMessages.ProjectNotFound);
 
-            if (project == null) 
-                return null;
-
-            await _repository.DeleteAsync(project);
-
-            return new DeleteProjectResponse
-            {
-                Id = id,
-                IsDeleted = true
-            };
+            await _projectRepository.DeleteAsync(project);
         }
     }
 }

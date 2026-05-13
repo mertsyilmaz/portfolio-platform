@@ -1,35 +1,26 @@
-﻿using CV.Application.Abstractions.Persistence;
+using AutoMapper;
+using CV.Application.Abstractions.Persistence;
+using CV.Application.Common.Exceptions;
 using CV.Contracts.SocialLinks;
-using System;
-using System.Collections.Generic;
-using System.Text;
 
 namespace CV.Application.SocialLinks
 {
     public class GetSocialLinkByIdService : IGetSocialLinkByIdService
     {
-        private readonly ISocialLinkRepository _repository;
+        private readonly ISocialLinkRepository _socialLinkRepository;
+        private readonly IMapper _mapper;
 
-        public GetSocialLinkByIdService(ISocialLinkRepository repository)
+        public GetSocialLinkByIdService(ISocialLinkRepository socialLinkRepository, IMapper mapper)
         {
-            _repository = repository;
+            _socialLinkRepository = socialLinkRepository;
+            _mapper = mapper;
         }
 
-        public async Task<GetSocialLinkByIdResponse?> GetByIdAsync(Guid id)
+        public async Task<GetSocialLinkByIdResponse> GetByIdAsync(Guid id)
         {
-            var entity = await _repository.GetByIdAsync(id);
-
-            if (entity is null)
-                return null;
-
-            return new GetSocialLinkByIdResponse
-            {
-                Id = entity.Id,
-                Platform = entity.Platform,
-                Url = entity.Url,
-                DisplayOrder = entity.DisplayOrder,
-                CreatedAt = entity.CreatedAt
-            };
+            var socialLink = await _socialLinkRepository.GetByIdAsync(id);
+            Guard.AgainstNotFound(socialLink, ErrorMessages.SocialLinkNotFound);
+            return _mapper.Map<GetSocialLinkByIdResponse>(socialLink);
         }
     }
 }

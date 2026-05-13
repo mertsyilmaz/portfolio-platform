@@ -2,9 +2,6 @@
 using Blog.Contracts.Comments;
 using Blog.Contracts.Images;
 using Blog.Contracts.Tags;
-using System;
-using System.Collections.Generic;
-using System.Text;
 
 namespace Blog.Contracts.Posts
 {

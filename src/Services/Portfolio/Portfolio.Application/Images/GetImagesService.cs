@@ -1,32 +1,24 @@
-﻿using Portfolio.Application.Abstractions.Persistence;
+using AutoMapper;
+using Portfolio.Application.Abstractions.Persistence;
 using Portfolio.Contracts.Images;
-using System;
-using System.Collections.Generic;
-using System.Text;
 
 namespace Portfolio.Application.Images
 {
     public class GetImagesService : IGetImagesService
     {
         private readonly IImageRepository _imageRepository;
+        private readonly IMapper _mapper;
 
-        public GetImagesService(IImageRepository imageRepository)
+        public GetImagesService(IImageRepository imageRepository, IMapper mapper)
         {
             _imageRepository = imageRepository;
+            _mapper = mapper;
         }
 
         public async Task<List<GetImagesResponse>> GetAllAsync()
         {
             var images = await _imageRepository.GetAllAsync();
-
-            return images.Select(x => new GetImagesResponse
-            {
-                Id = x.Id,
-                FileId = x.FileId,
-                DisplayOrder = x.DisplayOrder,
-                IsCover = x.IsCover,
-                ProjectId = x.ProjectId
-            }).ToList();
+            return _mapper.Map<List<GetImagesResponse>>(images);
         }
     }
 }

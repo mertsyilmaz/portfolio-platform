@@ -1,12 +1,9 @@
-﻿using CV.Contracts.Languages;
-using System;
-using System.Collections.Generic;
-using System.Text;
+using CV.Contracts.Languages;
 
 namespace CV.Application.Languages
 {
     public interface IUpdateLanguageService
     {
-        Task<UpdateLanguageResponse?> UpdateAsync(Guid id,UpdateLanguageRequest request);
+        Task<UpdateLanguageResponse> UpdateAsync(Guid id, UpdateLanguageRequest request);
     }
 }

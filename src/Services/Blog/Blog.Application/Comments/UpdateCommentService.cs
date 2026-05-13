@@ -2,9 +2,6 @@
 using Blog.Application.Abstractions.Persistence;
 using Blog.Application.Common.Exceptions;
 using Blog.Contracts.Comments;
-using System;
-using System.Collections.Generic;
-using System.Text;
 
 namespace Blog.Application.Comments
 {
@@ -23,11 +20,9 @@ namespace Blog.Application.Comments
         {
             var comment = await _commentRepository.GetByIdAsync(id);
 
-            if (comment == null)
-                throw new NotFoundException("Comment not found.");
+            Guard.AgainstNotFound(comment, ErrorMessages.CommentNotFound);
 
             _mapper.Map(request, comment);
-            comment.UpdatedAt = DateTime.UtcNow;
 
             await _commentRepository.UpdateAsync(comment);
 

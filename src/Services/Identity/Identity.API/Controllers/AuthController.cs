@@ -1,8 +1,8 @@
-﻿using Identity.Application.Auth;
+using Identity.Application.Auth;
 using Identity.Contracts.Auth;
-using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
+using System.Security.Claims;
 
 namespace Identity.API.Controllers
 {
@@ -17,27 +17,28 @@ namespace Identity.API.Controllers
             _authService = authService;
         }
 
+        [AllowAnonymous]
         [HttpPost("login")]
-        public async Task<IActionResult> Login([FromBody] LoginRequest request)
+        public async Task<ActionResult<LoginResponse>> Login([FromBody] LoginRequest request)
         {
-            try
-            {
-                var response = await _authService.LoginAsync(request);
-                return Ok(response);
-            }
-            catch (Exception ex)
-            {
-
-                return Unauthorized(ex.Message);
-            }
+            var response = await _authService.LoginAsync(request);
+            return Ok(response);
         }
 
         [Authorize]
         [HttpGet("me")]
-        public IActionResult Me()
+        public ActionResult<MeResponse> Me()
         {
-            return Ok("You are authorized");
-        }
+            var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+            var email = User.FindFirstValue(ClaimTypes.Email);
+            var roles = User.FindAll(ClaimTypes.Role).Select(x => x.Value).ToArray();
 
+            return Ok(new MeResponse
+            {
+                UserId = Guid.TryParse(userId, out var parsedUserId) ? parsedUserId : Guid.Empty,
+                Email = email ?? string.Empty,
+                Roles = roles
+            });
+        }
     }
 }

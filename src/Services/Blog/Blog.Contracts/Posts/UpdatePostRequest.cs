@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-
-namespace Blog.Contracts.Posts
+﻿namespace Blog.Contracts.Posts
 {
     public class UpdatePostRequest
     {

@@ -1,27 +1,24 @@
-﻿using Portfolio.Application.Abstractions.Persistence;
+using AutoMapper;
+using Portfolio.Application.Abstractions.Persistence;
 using Portfolio.Contracts.Technologies;
-using System;
-using System.Collections.Generic;
-using System.Text;
 
 namespace Portfolio.Application.Technologies
 {
     public class GetTechnologiesService : IGetTechnologiesService
     {
         private readonly ITechnologyRepository _technologyRepository;
+        private readonly IMapper _mapper;
 
-        public GetTechnologiesService(ITechnologyRepository technologyRepository)
+        public GetTechnologiesService(ITechnologyRepository technologyRepository, IMapper mapper)
         {
             _technologyRepository = technologyRepository;
+            _mapper = mapper;
         }
+
         public async Task<List<GetTechnologiesResponse>> GetAllAsync()
         {
             var technologies = await _technologyRepository.GetAllAsync();
-            return technologies.Select(x => new GetTechnologiesResponse
-            {
-                Id = x.Id,
-                Name = x.Name
-            }).ToList();
+            return _mapper.Map<List<GetTechnologiesResponse>>(technologies);
         }
     }
 }

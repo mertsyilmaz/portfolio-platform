@@ -1,8 +1,6 @@
-﻿using Blog.Contracts.Comments;
+﻿using Blog.Application.Common.Validation;
+using Blog.Contracts.Comments;
 using FluentValidation;
-using System;
-using System.Collections.Generic;
-using System.Text;
 
 namespace Blog.Application.Common.Validators.Comments
 {
@@ -11,14 +9,13 @@ namespace Blog.Application.Common.Validators.Comments
         public CreateCommentRequestValidator()
         {
             RuleFor(x => x.PostId)
-                .NotEmpty().WithMessage("Post id is required.");
+                .MustBeRequiredId("Post id");
 
             RuleFor(x => x.AuthorId)
-                .NotEmpty().WithMessage("Author id is required.");
+                .MustBeRequiredId("Author id");
 
             RuleFor(x => x.Content)
-                .NotEmpty().WithMessage("Content is required.")
-                .MaximumLength(1000).WithMessage("Content cannot exceed 1000 characters.");
+                .MustBeRequiredText("Content", 1000);
         }
     }
 }

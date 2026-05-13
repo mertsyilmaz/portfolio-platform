@@ -1,8 +1,6 @@
 ﻿using Blog.Application.Abstractions.Services;
-using System;
-using System.Collections.Generic;
+using Blog.Application.Common.Exceptions;
 using System.Net;
-using System.Text;
 
 namespace Blog.Infrastructure.Services
 {
@@ -25,7 +23,7 @@ namespace Blog.Infrastructure.Services
             if (response.StatusCode == HttpStatusCode.NotFound)
                 return false;
 
-            throw new Exception("File service request failed.");
+            throw new ExternalServiceException(ErrorMessages.FileServiceRequestFailed);
         }
     }
 }

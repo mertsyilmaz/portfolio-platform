@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-
-namespace Blog.Contracts.Comments
+﻿namespace Blog.Contracts.Comments
 {
     public class CreateCommentRequest
     {

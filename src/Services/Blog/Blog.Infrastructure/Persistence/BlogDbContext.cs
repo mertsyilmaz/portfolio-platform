@@ -1,8 +1,6 @@
-﻿using Blog.Domain.Entities;
+﻿using Blog.Domain.Common;
+using Blog.Domain.Entities;
 using Microsoft.EntityFrameworkCore;
-using System;
-using System.Collections.Generic;
-using System.Text;
 
 namespace Blog.Infrastructure.Persistence
 {
@@ -18,6 +16,39 @@ namespace Blog.Infrastructure.Persistence
         public DbSet<Comment> Comments => Set<Comment>();
         public DbSet<Image> Images => Set<Image>();
 
+        public override int SaveChanges()
+        {
+            ApplyAuditInformation();
+            return base.SaveChanges();
+        }
+        public override async Task<int> SaveChangesAsync(CancellationToken cancellationToken = default)
+        {
+            ApplyAuditInformation();
+            return await base.SaveChangesAsync(cancellationToken);
+        }
+        private void ApplyAuditInformation()
+        {
+            var now = DateTime.UtcNow;
+
+            var entries = ChangeTracker
+                .Entries<IHasTimestamps>()
+                .Where(x => x.State == EntityState.Added || x.State == EntityState.Modified);
+
+            foreach (var entry in entries)
+            {
+                if (entry.State == EntityState.Added)
+                {
+                    entry.Entity.CreatedAt = now;
+                    entry.Entity.UpdatedAt = null;
+                }
+
+                if (entry.State == EntityState.Modified)
+                {
+                    entry.Property(x => x.CreatedAt).IsModified = false;
+                    entry.Entity.UpdatedAt = now;
+                }
+            }
+        }
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             base.OnModelCreating(modelBuilder);

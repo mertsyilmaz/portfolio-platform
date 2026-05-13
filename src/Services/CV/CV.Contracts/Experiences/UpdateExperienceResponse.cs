@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-
-namespace CV.Contracts.Experiences
+﻿namespace CV.Contracts.Experiences
 {
     public class UpdateExperienceResponse
     {

@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-
-namespace Blog.Contracts.Enums
+﻿namespace Blog.Contracts.Enums
 {
     public enum ImageUsageType
     {

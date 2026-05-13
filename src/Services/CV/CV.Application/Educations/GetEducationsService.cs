@@ -1,34 +1,24 @@
-﻿using CV.Application.Abstractions.Persistence;
+using AutoMapper;
+using CV.Application.Abstractions.Persistence;
 using CV.Contracts.Educations;
-using System;
-using System.Collections.Generic;
-using System.Text;
 
 namespace CV.Application.Educations
 {
     public class GetEducationsService : IGetEducationsService
     {
         private readonly IEducationRepository _educationRepository;
+        private readonly IMapper _mapper;
 
-        public GetEducationsService(IEducationRepository educationRepository)
+        public GetEducationsService(IEducationRepository educationRepository, IMapper mapper)
         {
             _educationRepository = educationRepository;
+            _mapper = mapper;
         }
 
         public async Task<List<GetEducationsResponse>> GetAllAsync()
         {
             var educations = await _educationRepository.GetAllAsync();
-
-            return educations.Select(x => new GetEducationsResponse
-            {
-                Id = x.Id,
-                SchoolName = x.SchoolName,
-                Department = x.Department,
-                Degree = x.Degree,
-                StartDate = x.StartDate,
-                EndDate = x.EndDate,
-                IsCurrent = x.IsCurrent
-            }).ToList();
+            return _mapper.Map<List<GetEducationsResponse>>(educations);
         }
     }
 }

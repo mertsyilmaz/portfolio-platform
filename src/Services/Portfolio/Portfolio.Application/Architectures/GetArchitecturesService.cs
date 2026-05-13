@@ -1,29 +1,24 @@
-﻿using Portfolio.Application.Abstractions.Persistence;
+using AutoMapper;
+using Portfolio.Application.Abstractions.Persistence;
 using Portfolio.Contracts.Architectures;
-using System;
-using System.Collections.Generic;
-using System.Text;
 
 namespace Portfolio.Application.Architectures
 {
     public class GetArchitecturesService : IGetArchitecturesService
     {
-        private readonly IArchitectureRepository _repository;
+        private readonly IArchitectureRepository _architectureRepository;
+        private readonly IMapper _mapper;
 
-        public GetArchitecturesService(IArchitectureRepository repository)
+        public GetArchitecturesService(IArchitectureRepository architectureRepository, IMapper mapper)
         {
-            _repository = repository;
+            _architectureRepository = architectureRepository;
+            _mapper = mapper;
         }
 
         public async Task<List<GetArchitecturesResponse>> GetAllAsync()
         {
-            var architectures = await _repository.GetAllAsync();
-
-            return architectures.Select(x => new GetArchitecturesResponse 
-            {
-                Id = x.Id,
-                Name = x.Name
-            }).ToList();
+            var architectures = await _architectureRepository.GetAllAsync();
+            return _mapper.Map<List<GetArchitecturesResponse>>(architectures);
         }
     }
 }

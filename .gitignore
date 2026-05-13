@@ -3,6 +3,7 @@ bin/
 obj/
 out/
 src/Services/File/File.API/uploads/
+appsettings.Development.json
 
 # Visual Studio
 .vs/
@@ -39,3 +40,11 @@ TestResults/
 
 # Coverage
 coverage/
+
+# Local AI handoff notes
+AI_START_HERE.md
+AI_PROJECT_STATE.md
+AI_ARCHITECTURE_MAP.md
+AI_WORKING_RULES.md
+AI_ROADMAP_STATUS.md
+AI_TECH_DECISIONS.md

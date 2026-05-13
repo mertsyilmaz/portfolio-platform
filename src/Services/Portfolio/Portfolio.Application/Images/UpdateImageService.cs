@@ -1,56 +1,39 @@
-﻿using Portfolio.Application.Abstractions.Persistence;
-using Portfolio.Application.Abstractions.Services;
+using AutoMapper;
+using Portfolio.Application.Abstractions.Persistence;
+using Portfolio.Application.Abstractions.Rules;
+using Portfolio.Application.Common.Exceptions;
 using Portfolio.Contracts.Images;
-using System;
-using System.Collections.Generic;
-using System.Text;
 
 namespace Portfolio.Application.Images
 {
     public class UpdateImageService : IUpdateImageService
     {
         private readonly IImageRepository _imageRepository;
-        private readonly IProjectRepository _projectRepository;
-        private readonly IFileService _fileService;
+        private readonly IMapper _mapper;
+        private readonly IPortfolioReferenceValidationService _referenceValidationService;
 
-        public UpdateImageService(IImageRepository imageRepository, IProjectRepository projectRepository, IFileService fileService)
+        public UpdateImageService(
+            IImageRepository imageRepository,
+            IMapper mapper,
+            IPortfolioReferenceValidationService referenceValidationService)
         {
             _imageRepository = imageRepository;
-            _projectRepository = projectRepository;
-            _fileService = fileService;
+            _mapper = mapper;
+            _referenceValidationService = referenceValidationService;
         }
 
-        public async Task<UpdateImageResponse?> UpdateAsync(Guid id, UpdateImageRequest request)
+        public async Task<UpdateImageResponse> UpdateAsync(Guid id, UpdateImageRequest request)
         {
             var image = await _imageRepository.GetByIdAsync(id);
+            Guard.AgainstNotFound(image, ErrorMessages.ImageNotFound);
 
-            if (image == null)
-                return null;
+            await _referenceValidationService.GetRequiredProjectAsync(request.ProjectId);
+            await _referenceValidationService.ValidateFileExistsAsync(request.FileId);
 
-            var project = await _projectRepository.GetByIdAsync(request.ProjectId);
-            if (project == null)
-                throw new Exception("Project not found.");
-
-            var fileExists = await _fileService.ExistsAsync(request.FileId);
-            if (!fileExists)
-                throw new Exception("File not found.");
-
-
-            image.FileId = request.FileId;
-            image.DisplayOrder = request.DisplayOrder;
-            image.IsCover = request.IsCover;
-            image.ProjectId = request.ProjectId;
-
+            _mapper.Map(request, image);
             await _imageRepository.UpdateAsync(image);
 
-            return new UpdateImageResponse
-            {
-                Id = image.Id,
-                FileId = image.FileId,
-                DisplayOrder = image.DisplayOrder,
-                IsCover = image.IsCover,
-                ProjectId = image.ProjectId
-            };
+            return _mapper.Map<UpdateImageResponse>(image);
         }
     }
 }

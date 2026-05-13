@@ -1,12 +1,7 @@
-﻿using Blog.Contracts.Comments;
-using System;
-using System.Collections.Generic;
-using System.Text;
-
-namespace Blog.Application.Comments
+﻿namespace Blog.Application.Comments
 {
     public interface IDeleteCommentService
     {
-        Task<DeleteCommentResponse> DeleteAsync(Guid id);
+        Task DeleteAsync(Guid id);
     }
 }

@@ -1,20 +1,8 @@
-﻿using CV.Domain.Entities;
-using System;
-using System.Collections.Generic;
-using System.Text;
+using CV.Domain.Entities;
 
 namespace CV.Application.Abstractions.Persistence
 {
-    public interface ISocialLinkRepository
+    public interface ISocialLinkRepository : IRepository<SocialLink>
     {
-        Task AddAsync(SocialLink socialLink);
-
-        Task<List<SocialLink>> GetAllAsync();
-
-        Task<SocialLink?> GetByIdAsync(Guid id);
-
-        Task UpdateAsync(SocialLink socialLink);
-
-        Task DeleteAsync(SocialLink socialLink);
     }
 }

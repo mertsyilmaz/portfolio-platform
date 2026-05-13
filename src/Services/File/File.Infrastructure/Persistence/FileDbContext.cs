@@ -1,19 +1,43 @@
-﻿using File.Domain.Entities;
+using File.Domain.Common;
+using File.Domain.Entities;
 using Microsoft.EntityFrameworkCore;
-using System;
-using System.Collections.Generic;
-using System.Text;
 
 namespace File.Infrastructure.Persistence
 {
     public class FileDbContext : DbContext
     {
         public FileDbContext(DbContextOptions<FileDbContext> options)
-              : base(options)
+            : base(options)
         {
         }
 
         public DbSet<FileRecord> Files => Set<FileRecord>();
+
+        public override int SaveChanges()
+        {
+            ApplyCreationAudit();
+            return base.SaveChanges();
+        }
+
+        public override async Task<int> SaveChangesAsync(CancellationToken cancellationToken = default)
+        {
+            ApplyCreationAudit();
+            return await base.SaveChangesAsync(cancellationToken);
+        }
+
+        private void ApplyCreationAudit()
+        {
+            var now = DateTime.UtcNow;
+
+            var entries = ChangeTracker
+                .Entries<IHasCreationTime>()
+                .Where(x => x.State == EntityState.Added);
+
+            foreach (var entry in entries)
+            {
+                entry.Entity.CreatedAt = now;
+            }
+        }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {

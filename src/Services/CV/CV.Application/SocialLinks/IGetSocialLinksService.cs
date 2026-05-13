@@ -1,7 +1,4 @@
-﻿using CV.Contracts.SocialLinks;
-using System;
-using System.Collections.Generic;
-using System.Text;
+using CV.Contracts.SocialLinks;
 
 namespace CV.Application.SocialLinks
 {

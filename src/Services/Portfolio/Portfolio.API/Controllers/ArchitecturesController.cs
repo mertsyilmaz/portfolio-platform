@@ -1,9 +1,6 @@
-﻿using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Portfolio.Application.Architectures;
-using Portfolio.Application.Categories;
 using Portfolio.Contracts.Architectures;
-using Portfolio.Contracts.Categories;
 
 namespace Portfolio.API.Controllers
 {
@@ -35,7 +32,7 @@ namespace Portfolio.API.Controllers
         public async Task<IActionResult> Create(CreateArchitectureRequest request)
         {
             var result = await _createArchitectureService.CreateAsync(request);
-            return Ok(result);
+            return CreatedAtAction(nameof(GetById), new { id = result.Id }, result);
         }
 
         [HttpGet]
@@ -49,10 +46,6 @@ namespace Portfolio.API.Controllers
         public async Task<IActionResult> GetById(Guid id)
         {
             var result = await _getArchitectureByIdService.GetByIdAsync(id);
-
-            if (result is null)
-                return NotFound();
-
             return Ok(result);
         }
 
@@ -60,22 +53,14 @@ namespace Portfolio.API.Controllers
         public async Task<IActionResult> Update(Guid id, UpdateArchitectureRequest request)
         {
             var result = await _updateArchitectureService.UpdateAsync(id, request);
-
-            if (result is null)
-                return NotFound();
-
             return Ok(result);
         }
 
         [HttpDelete("{id:guid}")]
         public async Task<IActionResult> Delete(Guid id)
         {
-            var result = await _deleteArchitectureService.DeleteAsync(id);
-
-            if (result is null)
-                return NotFound();
-
-            return Ok(result);
+            await _deleteArchitectureService.DeleteAsync(id);
+            return NoContent();
         }
     }
 }

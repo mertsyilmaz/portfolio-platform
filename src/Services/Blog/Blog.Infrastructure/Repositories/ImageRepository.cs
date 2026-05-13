@@ -1,10 +1,7 @@
 ﻿using Blog.Application.Abstractions.Persistence;
+using Blog.Domain.Entities;
 using Blog.Infrastructure.Persistence;
 using Microsoft.EntityFrameworkCore;
-using System;
-using System.Collections.Generic;
-using System.Text;
-using Blog.Domain.Entities;
 
 namespace Blog.Infrastructure.Repositories
 {

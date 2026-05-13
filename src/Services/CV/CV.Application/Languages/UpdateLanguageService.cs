@@ -1,38 +1,28 @@
-﻿using CV.Application.Abstractions.Persistence;
+using AutoMapper;
+using CV.Application.Abstractions.Persistence;
+using CV.Application.Common.Exceptions;
 using CV.Contracts.Languages;
-using System;
-using System.Collections.Generic;
-using System.Text;
 
 namespace CV.Application.Languages
 {
     public class UpdateLanguageService : IUpdateLanguageService
     {
         private readonly ILanguageRepository _languageRepository;
+        private readonly IMapper _mapper;
 
-        public UpdateLanguageService(ILanguageRepository languageRepository)
+        public UpdateLanguageService(ILanguageRepository languageRepository, IMapper mapper)
         {
             _languageRepository = languageRepository;
+            _mapper = mapper;
         }
 
         public async Task<UpdateLanguageResponse> UpdateAsync(Guid id, UpdateLanguageRequest request)
         {
             var language = await _languageRepository.GetByIdAsync(id);
-
-            if (language == null)
-                return null;
-
-            language.Name = request.Name;
-            language.Level = request.Level;
-
+            Guard.AgainstNotFound(language, ErrorMessages.LanguageNotFound);
+            _mapper.Map(request, language);
             await _languageRepository.UpdateAsync(language);
-
-            return new UpdateLanguageResponse
-            {
-                Id = language.Id,
-                Name = language.Name,
-                Level = language.Level
-            };
+            return _mapper.Map<UpdateLanguageResponse>(language);
         }
     }
 }

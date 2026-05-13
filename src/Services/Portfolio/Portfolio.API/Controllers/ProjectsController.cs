@@ -1,8 +1,5 @@
-﻿using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
-using Portfolio.Application.Images;
 using Portfolio.Application.Projects;
-using Portfolio.Contracts.Images;
 using Portfolio.Contracts.Projects;
 
 namespace Portfolio.API.Controllers
@@ -17,7 +14,12 @@ namespace Portfolio.API.Controllers
         private readonly IUpdateProjectService _updateProjectService;
         private readonly IDeleteProjectService _deleteProjectService;
 
-        public ProjectsController(ICreateProjectService createProjectService, IGetProjectsService getProjectsService, IGetProjectByIdService getProjectByIdService, IUpdateProjectService updateProjectService, IDeleteProjectService deleteProjectService)
+        public ProjectsController(
+            ICreateProjectService createProjectService,
+            IGetProjectsService getProjectsService,
+            IGetProjectByIdService getProjectByIdService,
+            IUpdateProjectService updateProjectService,
+            IDeleteProjectService deleteProjectService)
         {
             _createProjectService = createProjectService;
             _getProjectsService = getProjectsService;
@@ -30,7 +32,7 @@ namespace Portfolio.API.Controllers
         public async Task<IActionResult> Create(CreateProjectRequest request)
         {
             var result = await _createProjectService.CreateAsync(request);
-            return Ok(result);
+            return CreatedAtAction(nameof(GetById), new { id = result.Id }, result);
         }
 
         [HttpGet]
@@ -44,10 +46,6 @@ namespace Portfolio.API.Controllers
         public async Task<IActionResult> GetById(Guid id)
         {
             var result = await _getProjectByIdService.GetByIdAsync(id);
-
-            if (result is null)
-                return NotFound();
-
             return Ok(result);
         }
 
@@ -55,22 +53,14 @@ namespace Portfolio.API.Controllers
         public async Task<IActionResult> Update(Guid id, UpdateProjectRequest request)
         {
             var result = await _updateProjectService.UpdateAsync(id, request);
-
-            if (result is null)
-                return NotFound();
-
             return Ok(result);
         }
 
         [HttpDelete("{id:guid}")]
         public async Task<IActionResult> Delete(Guid id)
         {
-            var result = await _deleteProjectService.DeleteAsync(id);
-
-            if (result is null)
-                return NotFound();
-
-            return Ok(result);
+            await _deleteProjectService.DeleteAsync(id);
+            return NoContent();
         }
     }
 }

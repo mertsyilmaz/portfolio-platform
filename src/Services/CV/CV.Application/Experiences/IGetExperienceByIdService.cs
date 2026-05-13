@@ -1,12 +1,9 @@
-﻿using CV.Contracts.Experiences;
-using System;
-using System.Collections.Generic;
-using System.Text;
+using CV.Contracts.Experiences;
 
 namespace CV.Application.Experiences
 {
     public interface IGetExperienceByIdService
     {
-        Task<GetExperienceByIdResponse?> GetByIdAsync(Guid id);
+        Task<GetExperienceByIdResponse> GetByIdAsync(Guid id);
     }
 }

@@ -1,12 +1,9 @@
-﻿using CV.Contracts.Skills;
-using System;
-using System.Collections.Generic;
-using System.Text;
+using CV.Contracts.Skills;
 
 namespace CV.Application.Skills
 {
     public interface IUpdateSkillService
     {
-        Task<UpdateSkillResponse?> UpdateAsync(Guid id, UpdateSkillRequest request);
+        Task<UpdateSkillResponse> UpdateAsync(Guid id, UpdateSkillRequest request);
     }
 }

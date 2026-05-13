@@ -1,6 +1,5 @@
-﻿using CV.Application.PersonalInfos;
+using CV.Application.PersonalInfos;
 using CV.Contracts.PersonalInfos;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
 namespace CV.API.Controllers
@@ -30,17 +29,13 @@ namespace CV.API.Controllers
         public async Task<IActionResult> Create(CreatePersonalInfoRequest request)
         {
             var result = await _createService.CreateAsync(request);
-            return Ok(result);
+            return CreatedAtAction(nameof(Get), new { }, result);
         }
 
         [HttpGet]
         public async Task<IActionResult> Get()
         {
             var result = await _getService.GetAsync();
-
-            if (result is null)
-                return NotFound();
-
             return Ok(result);
         }
 
@@ -48,22 +43,14 @@ namespace CV.API.Controllers
         public async Task<IActionResult> Update(UpdatePersonalInfoRequest request)
         {
             var result = await _updateService.UpdateAsync(request);
-
-            if (result is null)
-                return NotFound();
-
             return Ok(result);
         }
 
         [HttpDelete]
         public async Task<IActionResult> Delete()
         {
-            var result = await _deleteService.DeleteAsync();
-
-            if (result is null)
-                return NotFound();
-
-            return Ok(result);
+            await _deleteService.DeleteAsync();
+            return NoContent();
         }
     }
 }

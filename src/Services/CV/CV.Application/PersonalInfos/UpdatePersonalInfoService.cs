@@ -1,60 +1,35 @@
-﻿using CV.Application.Abstractions.Persistence;
-using CV.Application.Abstractions.Services;
+using AutoMapper;
+using CV.Application.Abstractions.Persistence;
+using CV.Application.Abstractions.Rules;
 using CV.Contracts.PersonalInfos;
-using System;
-using System.Collections.Generic;
-using System.Text;
 
 namespace CV.Application.PersonalInfos
 {
     public class UpdatePersonalInfoService : IUpdatePersonalInfoService
     {
         private readonly IPersonalInfoRepository _repository;
-        private readonly IFileService _fileService;
+        private readonly ICvReferenceValidationService _referenceValidationService;
+        private readonly IMapper _mapper;
 
-        public UpdatePersonalInfoService(IPersonalInfoRepository repository, IFileService fileService)
+        public UpdatePersonalInfoService(
+            IPersonalInfoRepository repository,
+            ICvReferenceValidationService referenceValidationService,
+            IMapper mapper)
         {
             _repository = repository;
-            _fileService = fileService;
+            _referenceValidationService = referenceValidationService;
+            _mapper = mapper;
         }
 
-        public async Task<UpdatePersonalInfoResponse?> UpdateAsync(UpdatePersonalInfoRequest request)
+        public async Task<UpdatePersonalInfoResponse> UpdateAsync(UpdatePersonalInfoRequest request)
         {
-            var entity = await _repository.GetAsync();
+            var entity = await _referenceValidationService.GetRequiredPersonalInfoAsync();
+            await _referenceValidationService.ValidateProfileImageExistsAsync(request.ProfileImageId);
 
-            if (entity == null)
-                return null;
-
-            if (request.ProfileImageId.HasValue)
-            {
-                var fileExists = await _fileService.ExistsAsync(request.ProfileImageId.Value);
-
-                if (!fileExists)
-                    throw new Exception("Profile image not found.");
-            }
-
-            entity.Location = request.Location;
-            entity.Summary = request.Summary;
-            entity.FirstName = request.FirstName;
-            entity.LastName = request.LastName;
-            entity.Email = request.Email;
-            entity.Phone = request.Phone;
-            entity.ProfileImageId = request.ProfileImageId;
-            entity.UpdatedAt = DateTime.UtcNow;
-
+            _mapper.Map(request, entity);
             await _repository.UpdateAsync(entity);
 
-            return new UpdatePersonalInfoResponse { 
-                Id = entity.Id,
-                ProfileImageId = entity.ProfileImageId,
-                Phone = entity.Phone,
-                Email = entity.Email,
-                FirstName = entity.FirstName,
-                LastName = entity.LastName,
-                Location = entity.Location,
-                Summary = entity.Summary,
-                Title = entity.Title
-            };
+            return _mapper.Map<UpdatePersonalInfoResponse>(entity);
         }
     }
 }

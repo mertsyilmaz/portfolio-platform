@@ -1,8 +1,5 @@
-﻿using CV.Application.Abstractions.Persistence;
-using CV.Contracts.Languages;
-using System;
-using System.Collections.Generic;
-using System.Text;
+using CV.Application.Abstractions.Persistence;
+using CV.Application.Common.Exceptions;
 
 namespace CV.Application.Languages
 {
@@ -15,20 +12,11 @@ namespace CV.Application.Languages
             _languageRepository = languageRepository;
         }
 
-        public async Task<DeleteLanguageResponse> DeleteAsync(Guid id)
+        public async Task DeleteAsync(Guid id)
         {
             var language = await _languageRepository.GetByIdAsync(id);
-
-            if (language == null)
-                return null;
-
+            Guard.AgainstNotFound(language, ErrorMessages.LanguageNotFound);
             await _languageRepository.DeleteAsync(language);
-
-            return new DeleteLanguageResponse
-            {
-                Id = language.Id,
-                IsDeleted = true
-            };
         }
     }
 }

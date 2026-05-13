@@ -1,9 +1,5 @@
 ﻿using Blog.Application.Abstractions.Persistence;
 using Blog.Application.Common.Exceptions;
-using Blog.Contracts.Posts;
-using System;
-using System.Collections.Generic;
-using System.Text;
 
 namespace Blog.Application.Posts
 {
@@ -16,20 +12,14 @@ namespace Blog.Application.Posts
             _postRepository = postRepository;
         }
 
-        public async Task<DeletePostResponse> DeleteAsync(Guid id)
+        public async Task DeleteAsync(Guid id)
         {
             var post = await _postRepository.GetByIdAsync(id);
 
-            if (post == null)
-                throw new NotFoundException("Post not found");
+            Guard.AgainstNotFound(post, ErrorMessages.PostNotFound);
 
             await _postRepository.DeleteAsync(post);
 
-            return new DeletePostResponse
-            {
-                Id = id,
-                IsDeleted = true
-            };
         }
     }
 }

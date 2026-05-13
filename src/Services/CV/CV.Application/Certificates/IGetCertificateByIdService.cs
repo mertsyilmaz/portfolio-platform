@@ -1,12 +1,9 @@
-﻿using CV.Contracts.Certificates;
-using System;
-using System.Collections.Generic;
-using System.Text;
+using CV.Contracts.Certificates;
 
 namespace CV.Application.Certificates
 {
     public interface IGetCertificateByIdService
     {
-        Task<GetCertificateByIdResponse?> GetByIdAsync(Guid id);
+        Task<GetCertificateByIdResponse> GetByIdAsync(Guid id);
     }
 }

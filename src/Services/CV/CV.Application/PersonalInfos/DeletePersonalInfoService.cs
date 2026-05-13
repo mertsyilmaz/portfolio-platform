@@ -1,35 +1,23 @@
-﻿using CV.Application.Abstractions.Persistence;
-using CV.Contracts.PersonalInfos;
-using System;
-using System.Collections.Generic;
-using System.Text;
+using CV.Application.Abstractions.Persistence;
+using CV.Application.Abstractions.Rules;
 
 namespace CV.Application.PersonalInfos
 {
     public class DeletePersonalInfoService : IDeletePersonalInfoService
     {
         private readonly IPersonalInfoRepository _repository;
+        private readonly ICvReferenceValidationService _referenceValidationService;
 
-        public DeletePersonalInfoService(IPersonalInfoRepository repository)
+        public DeletePersonalInfoService(IPersonalInfoRepository repository, ICvReferenceValidationService referenceValidationService)
         {
             _repository = repository;
+            _referenceValidationService = referenceValidationService;
         }
 
-        public async Task<DeletePersonalInfoResponse?> DeleteAsync()
+        public async Task DeleteAsync()
         {
-            var entity = await _repository.GetAsync();
-
-            if (entity == null) 
-                return null;
-
+            var entity = await _referenceValidationService.GetRequiredPersonalInfoAsync();
             await _repository.DeleteAsync(entity);
-
-            return new DeletePersonalInfoResponse
-            {
-                Id = entity.Id,
-                IsDeleted = true
-            };
-            
         }
     }
 }

@@ -1,37 +1,26 @@
-﻿using CV.Application.Abstractions.Persistence;
+using AutoMapper;
+using CV.Application.Abstractions.Persistence;
+using CV.Application.Common.Exceptions;
 using CV.Contracts.Certificates;
-using System;
-using System.Collections.Generic;
-using System.Text;
 
 namespace CV.Application.Certificates
 {
     public class GetCertificateByIdService : IGetCertificateByIdService
     {
         private readonly ICertificateRepository _certificateRepository;
+        private readonly IMapper _mapper;
 
-        public GetCertificateByIdService(ICertificateRepository certificateRepository)
+        public GetCertificateByIdService(ICertificateRepository certificateRepository, IMapper mapper)
         {
             _certificateRepository = certificateRepository;
+            _mapper = mapper;
         }
 
-        public async Task<GetCertificateByIdResponse?> GetByIdAsync(Guid id)
+        public async Task<GetCertificateByIdResponse> GetByIdAsync(Guid id)
         {
             var certificate = await _certificateRepository.GetByIdAsync(id);
-
-            if(certificate == null) 
-                return null;
-
-            return new GetCertificateByIdResponse
-            {
-                Id = certificate.Id,
-                Name = certificate.Name,
-                Issuer = certificate.Issuer,
-                IssuedDate = certificate.IssuedDate,
-                CredentialUrl = certificate.CredentialUrl,
-                CredentialId = certificate.CredentialId,
-                CreatedAt = certificate.CreatedAt
-            };
+            Guard.AgainstNotFound(certificate, ErrorMessages.CertificateNotFound);
+            return _mapper.Map<GetCertificateByIdResponse>(certificate);
         }
     }
 }

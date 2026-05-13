@@ -2,9 +2,6 @@
 using Blog.Domain.Common;
 using Blog.Infrastructure.Persistence;
 using Microsoft.EntityFrameworkCore;
-using System;
-using System.Collections.Generic;
-using System.Text;
 
 namespace Blog.Infrastructure.Repositories
 {

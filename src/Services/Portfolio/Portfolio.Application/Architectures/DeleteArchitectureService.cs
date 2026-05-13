@@ -1,34 +1,23 @@
-﻿using Portfolio.Application.Abstractions.Persistence;
-using Portfolio.Contracts.Architectures;
-using System;
-using System.Collections.Generic;
-using System.Text;
+using Portfolio.Application.Abstractions.Persistence;
+using Portfolio.Application.Common.Exceptions;
 
 namespace Portfolio.Application.Architectures
 {
     public class DeleteArchitectureService : IDeleteArchitectureService
     {
-        private readonly IArchitectureRepository _repository;
+        private readonly IArchitectureRepository _architectureRepository;
 
-        public DeleteArchitectureService(IArchitectureRepository repository)
+        public DeleteArchitectureService(IArchitectureRepository architectureRepository)
         {
-            _repository = repository;
+            _architectureRepository = architectureRepository;
         }
 
-        public async Task<DeleteArchitectureResponse> DeleteAsync(Guid id)
+        public async Task DeleteAsync(Guid id)
         {
-            var architecture = await _repository.GetByIdAsync(id);
+            var architecture = await _architectureRepository.GetByIdAsync(id);
+            Guard.AgainstNotFound(architecture, ErrorMessages.ArchitectureNotFound);
 
-            if (architecture == null)
-                return null;
-
-            await _repository.DeleteAsync(architecture);
-
-            return new DeleteArchitectureResponse
-            {
-                Id = architecture.Id,
-                IsDeleted = true
-            };
+            await _architectureRepository.DeleteAsync(architecture);
         }
     }
 }

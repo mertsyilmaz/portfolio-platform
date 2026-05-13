@@ -1,5 +1,5 @@
-﻿using File.Application.Files;
-using Microsoft.AspNetCore.Http;
+using File.API.Models;
+using File.Application.Files;
 using Microsoft.AspNetCore.Mvc;
 
 namespace File.API.Controllers
@@ -26,19 +26,18 @@ namespace File.API.Controllers
         }
 
         [HttpPost("upload")]
-        public async Task<IActionResult> Upload(IFormFile file, [FromForm] string folderName)
+        public async Task<IActionResult> Upload([FromForm] UploadFileFormRequest request)
         {
-            if (file is null || file.Length == 0)
-                return BadRequest("File is required.");
+            await using var fileStream = request.File.OpenReadStream();
 
             var result = await _uploadFileService.UploadAsync(
-                file.OpenReadStream(),
-                file.FileName,
-                file.ContentType,
-                file.Length,
-                folderName);
+                fileStream,
+                request.File.FileName,
+                request.File.ContentType,
+                request.File.Length,
+                request.FolderName);
 
-            return Ok(result);
+            return CreatedAtAction(nameof(GetById), new { id = result.Id }, result);
         }
 
         [HttpGet]
@@ -52,22 +51,14 @@ namespace File.API.Controllers
         public async Task<IActionResult> GetById(Guid id)
         {
             var result = await _getFileByIdService.GetByIdAsync(id);
-
-            if (result is null)
-                return NotFound();
-
             return Ok(result);
         }
 
         [HttpDelete("{id:guid}")]
         public async Task<IActionResult> Delete(Guid id)
         {
-            var result = await _deleteFileService.DeleteAsync(id);
-
-            if (result is null)
-                return NotFound();
-
-            return Ok(result);
+            await _deleteFileService.DeleteAsync(id);
+            return NoContent();
         }
     }
 }

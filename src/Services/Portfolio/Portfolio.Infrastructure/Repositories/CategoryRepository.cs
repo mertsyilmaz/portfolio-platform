@@ -1,58 +1,27 @@
-﻿using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore;
 using Portfolio.Application.Abstractions.Persistence;
 using Portfolio.Domain.Entities;
 using Portfolio.Infrastructure.Persistence;
-using System;
-using System.Collections.Generic;
-using System.Text;
 
 namespace Portfolio.Infrastructure.Repositories
 {
-    public class CategoryRepository : ICategoryRepository
+    public class CategoryRepository : Repository<Category>, ICategoryRepository
     {
-        private readonly PortfolioDbContext _context;
-
-        public CategoryRepository(PortfolioDbContext context)
+        public CategoryRepository(PortfolioDbContext context) : base(context)
         {
-            _context = context;
         }
 
-        public async Task AddAsync(Category category)
+        public override async Task<List<Category>> GetAllAsync()
         {
-            await _context.Categories.AddAsync(category);
-            await _context.SaveChangesAsync();
-        }
-
-        public async Task DeleteAsync(Category category)
-        {
-           _context.Categories.Remove(category);
-            await _context.SaveChangesAsync();
-        }
-
-        public async Task<List<Category>> GetAllAsync()
-        {
-            return await _context.Categories.OrderBy(x => x.Name).ToListAsync();
-        }
-
-        public async Task<Category?> GetByIdAsync(Guid id)
-        {
-            return await _context.Categories.FirstOrDefaultAsync(x => x.Id == id);
+            return await DbSet.OrderBy(x => x.Name).ToListAsync();
         }
 
         public async Task<List<Category>> GetByIdsAsync(List<Guid> ids)
         {
             if (ids is null || ids.Count == 0)
-                return new List<Category>();
+                return [];
 
-            return await _context.Categories
-                .Where(x => ids.Contains(x.Id))
-                .ToListAsync();
-        }
-
-        public async Task UpdateAsync(Category category)
-        {
-            _context.Categories.Update(category);
-            await _context.SaveChangesAsync();
+            return await DbSet.Where(x => ids.Contains(x.Id)).ToListAsync();
         }
     }
 }

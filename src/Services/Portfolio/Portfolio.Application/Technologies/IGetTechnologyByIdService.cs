@@ -1,12 +1,9 @@
-﻿using Portfolio.Contracts.Technologies;
-using System;
-using System.Collections.Generic;
-using System.Text;
+using Portfolio.Contracts.Technologies;
 
 namespace Portfolio.Application.Technologies
 {
     public interface IGetTechnologyByIdService
     {
-        Task<GetTechnologyByIdResponse?> GetByIdAsync(Guid id);
+        Task<GetTechnologyByIdResponse> GetByIdAsync(Guid id);
     }
 }

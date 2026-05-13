@@ -1,7 +1,4 @@
-﻿using CV.Contracts.Hobbies;
-using System;
-using System.Collections.Generic;
-using System.Text;
+using CV.Contracts.Hobbies;
 
 namespace CV.Application.Hobbies
 {

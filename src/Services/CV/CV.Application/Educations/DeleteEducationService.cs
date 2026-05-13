@@ -1,8 +1,5 @@
-﻿using CV.Application.Abstractions.Persistence;
-using CV.Contracts.Educations;
-using System;
-using System.Collections.Generic;
-using System.Text;
+using CV.Application.Abstractions.Persistence;
+using CV.Application.Common.Exceptions;
 
 namespace CV.Application.Educations
 {
@@ -15,20 +12,11 @@ namespace CV.Application.Educations
             _educationRepository = educationRepository;
         }
 
-        public async Task<DeleteEducationResponse?> DeleteAsync(Guid id)
+        public async Task DeleteAsync(Guid id)
         {
             var education = await _educationRepository.GetByIdAsync(id);
-
-            if (education is null)
-                return null;
-
+            Guard.AgainstNotFound(education, ErrorMessages.EducationNotFound);
             await _educationRepository.DeleteAsync(education);
-
-            return new DeleteEducationResponse
-            {
-                Id = id,
-                IsDeleted = true
-            };
         }
     }
 }

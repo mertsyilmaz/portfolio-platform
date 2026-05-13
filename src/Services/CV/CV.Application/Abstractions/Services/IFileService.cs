@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-
-namespace CV.Application.Abstractions.Services
+﻿namespace CV.Application.Abstractions.Services
 {
     public interface IFileService
     {

@@ -1,12 +1,9 @@
-﻿using CV.Contracts.PersonalInfos;
-using System;
-using System.Collections.Generic;
-using System.Text;
+using CV.Contracts.PersonalInfos;
 
 namespace CV.Application.PersonalInfos
 {
     public interface IUpdatePersonalInfoService
     {
-        Task<UpdatePersonalInfoResponse?> UpdateAsync(UpdatePersonalInfoRequest request);
+        Task<UpdatePersonalInfoResponse> UpdateAsync(UpdatePersonalInfoRequest request);
     }
 }

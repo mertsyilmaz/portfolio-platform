@@ -1,50 +1,30 @@
-﻿using CV.Application.Abstractions.Persistence;
+using AutoMapper;
+using CV.Application.Abstractions.Persistence;
+using CV.Application.Common.Exceptions;
 using CV.Contracts.Educations;
-using System;
-using System.Collections.Generic;
-using System.Text;
 
 namespace CV.Application.Educations
 {
     public class UpdateEducationService : IUpdateEducationService
     {
         private readonly IEducationRepository _educationRepository;
+        private readonly IMapper _mapper;
 
-        public UpdateEducationService(IEducationRepository educationRepository)
+        public UpdateEducationService(IEducationRepository educationRepository, IMapper mapper)
         {
             _educationRepository = educationRepository;
+            _mapper = mapper;
         }
 
-        public async Task<UpdateEducationResponse?> UpdateAsync(Guid id, UpdateEducationRequest request)
+        public async Task<UpdateEducationResponse> UpdateAsync(Guid id, UpdateEducationRequest request)
         {
             var education = await _educationRepository.GetByIdAsync(id);
+            Guard.AgainstNotFound(education, ErrorMessages.EducationNotFound);
 
-            if (education is null)
-                return null;
-
-            education.SchoolName = request.SchoolName;
-            education.Department = request.Department;
-            education.Degree = request.Degree;
-            education.StartDate = DateTime.SpecifyKind(request.StartDate, DateTimeKind.Utc);
-            education.EndDate = request.EndDate.HasValue
-                ? DateTime.SpecifyKind(request.EndDate.Value, DateTimeKind.Utc)
-                : null;
-            education.Description = request.Description;
-            education.IsCurrent = request.IsCurrent;
-
+            _mapper.Map(request, education);
             await _educationRepository.UpdateAsync(education);
 
-            return new UpdateEducationResponse
-            {
-                Id = education.Id,
-                SchoolName = education.SchoolName,
-                Department = education.Department,
-                Degree = education.Degree,
-                StartDate = education.StartDate,
-                EndDate = education.EndDate,
-                Description = education.Description,
-                IsCurrent = education.IsCurrent
-            };
+            return _mapper.Map<UpdateEducationResponse>(education);
         }
     }
 }

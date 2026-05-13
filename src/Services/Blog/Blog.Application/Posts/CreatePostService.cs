@@ -1,58 +1,35 @@
 ﻿using AutoMapper;
 using Blog.Application.Abstractions.Persistence;
-using Blog.Application.Abstractions.Services;
-using Blog.Application.Common.Exceptions;
+using Blog.Application.Abstractions.Rules;
 using Blog.Contracts.Posts;
 using Blog.Domain.Entities;
-using System;
-using System.Collections.Generic;
-using System.Text;
 
 namespace Blog.Application.Posts
 {
     public class CreatePostService : ICreatePostService
     {
         private readonly IPostRepository _postRepository;
-        private readonly ICategoryRepository _categoryRepository;
-        private readonly ITagRepository _tagRepository;
-        private readonly IFileService _fileService;
         private readonly IMapper _mapper;
+        private readonly IBlogReferenceValidationService _referenceValidationService;
 
         public CreatePostService(
             IPostRepository postRepository,
-            ICategoryRepository categoryRepository,
-            ITagRepository tagRepository,
-            IFileService fileService,
-            IMapper mapper)
+            IMapper mapper,
+            IBlogReferenceValidationService referenceValidationService)
         {
             _postRepository = postRepository;
-            _categoryRepository = categoryRepository;
-            _tagRepository = tagRepository;
-            _fileService = fileService;
             _mapper = mapper;
+            _referenceValidationService = referenceValidationService;
         }
 
         public async Task<CreatePostResponse> CreateAsync(CreatePostRequest request)
         {
-            var categories = await _categoryRepository.GetByIdsAsync(request.CategoryIds);
-            var tags = await _tagRepository.GetByIdsAsync(request.TagIds);
+            var categories = await _referenceValidationService.GetRequiredCategoriesAsync(request.CategoryIds);
+            var tags = await _referenceValidationService.GetRequiredTagsAsync(request.TagIds);
 
-            if (categories.Count != request.CategoryIds.Count)
-                throw new ValidationException("One or more category ids are invalid.");
-
-            if (tags.Count != request.TagIds.Count)
-                throw new ValidationException("One or more tag ids are invalid.");
-
-            if (request.CoverImageId.HasValue)
-            {
-                var fileExists = await _fileService.ExistsAsync(request.CoverImageId.Value);
-
-                if (!fileExists)
-                    throw new ValidationException("Cover image not found.");
-            }
+            await _referenceValidationService.ValidateCoverImageExistsAsync(request.CoverImageId);
 
             var post = _mapper.Map<Post>(request);
-            post.CreatedAt = DateTime.UtcNow;
             post.PublishedAt = request.IsPublished ? DateTime.UtcNow : null;
             post.Categories = categories;
             post.Tags = tags;

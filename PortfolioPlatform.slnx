@@ -7,7 +7,9 @@
   <Folder Name="/infrastructure/messaging/" />
   <Folder Name="/infrastructure/monitoring/" />
   <Folder Name="/src/" />
-  <Folder Name="/src/ApiGateway/" />
+  <Folder Name="/src/ApiGateway/">
+    <Project Path="src/ApiGateway/PortfolioPlatform.ApiGateway/PortfolioPlatform.ApiGateway.csproj" Id="939ab2cf-6c7e-4267-b454-7212c1c32411" />
+  </Folder>
   <Folder Name="/src/BuildingBlocks/" />
   <Folder Name="/src/Services/" />
   <Folder Name="/src/Services/Blog/">

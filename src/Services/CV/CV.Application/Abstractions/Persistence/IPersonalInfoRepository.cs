@@ -1,15 +1,9 @@
-﻿using CV.Domain.Entities;
-using System;
-using System.Collections.Generic;
-using System.Text;
+using CV.Domain.Entities;
 
 namespace CV.Application.Abstractions.Persistence
 {
-    public interface IPersonalInfoRepository
+    public interface IPersonalInfoRepository : IRepository<PersonalInfo>
     {
-        Task AddAsync(PersonalInfo personalInfo);
         Task<PersonalInfo?> GetAsync();
-        Task UpdateAsync(PersonalInfo personalInfo);
-        Task DeleteAsync(PersonalInfo personalInfo);
     }
 }

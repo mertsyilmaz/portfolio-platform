@@ -1,40 +1,26 @@
-﻿using CV.Application.Abstractions.Persistence;
+using AutoMapper;
+using CV.Application.Abstractions.Persistence;
 using CV.Contracts.Skills;
 using CV.Domain.Entities;
-using System;
-using System.Collections.Generic;
-using System.Text;
 
 namespace CV.Application.Skills
 {
     public class CreateSkillService : ICreateSkillService
     {
         private readonly ISkillRepository _skillRepository;
-        public CreateSkillService(ISkillRepository skillRepository)
+        private readonly IMapper _mapper;
+
+        public CreateSkillService(ISkillRepository skillRepository, IMapper mapper)
         {
             _skillRepository = skillRepository;
+            _mapper = mapper;
         }
 
         public async Task<CreateSkillResponse> CreateAsync(CreateSkillRequest request)
         {
-            var skill = new Skill
-            {
-                Id = Guid.NewGuid(),
-                Name = request.Name,
-                Level = request.Level,
-                Category = request.Category,
-                CreatedAt = DateTime.UtcNow
-            };
-
+            var skill = _mapper.Map<Skill>(request);
             await _skillRepository.AddAsync(skill);
-
-            return new CreateSkillResponse { 
-                Id = skill.Id,
-                Name = request.Name,
-                Level = skill.Level
-            };
-
-
+            return _mapper.Map<CreateSkillResponse>(skill);
         }
     }
 }

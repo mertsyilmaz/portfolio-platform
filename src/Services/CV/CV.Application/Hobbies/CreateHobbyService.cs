@@ -1,38 +1,26 @@
-﻿using CV.Application.Abstractions.Persistence;
+using AutoMapper;
+using CV.Application.Abstractions.Persistence;
 using CV.Contracts.Hobbies;
 using CV.Domain.Entities;
-using System;
-using System.Collections.Generic;
-using System.Text;
 
 namespace CV.Application.Hobbies
 {
     public class CreateHobbyService : ICreateHobbyService
     {
-        private readonly IHobbyRepository _repository;
+        private readonly IHobbyRepository _hobbyRepository;
+        private readonly IMapper _mapper;
 
-        public CreateHobbyService(IHobbyRepository repository)
+        public CreateHobbyService(IHobbyRepository hobbyRepository, IMapper mapper)
         {
-            _repository = repository;
+            _hobbyRepository = hobbyRepository;
+            _mapper = mapper;
         }
 
         public async Task<CreateHobbyResponse> CreateAsync(CreateHobbyRequest request)
         {
-            var hobby = new Hobby
-            {
-                Id = Guid.NewGuid(),
-                Name = request.Name,
-                Description = request.Description,
-                CreatedAt = DateTime.UtcNow
-            };
-
-            await _repository.AddAsync(hobby);
-
-            return new CreateHobbyResponse
-            {
-                Name = hobby.Name,
-                Id = hobby.Id
-            };
+            var hobby = _mapper.Map<Hobby>(request);
+            await _hobbyRepository.AddAsync(hobby);
+            return _mapper.Map<CreateHobbyResponse>(hobby);
         }
     }
 }

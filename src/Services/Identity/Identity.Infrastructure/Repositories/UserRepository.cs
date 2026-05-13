@@ -1,24 +1,23 @@
-﻿using Identity.Application.Abstractions.Persistence;
+using Identity.Application.Abstractions.Persistence;
 using Identity.Domain.Entities;
 using Identity.Infrastructure.Persistence;
 using Microsoft.EntityFrameworkCore;
-using System;
-using System.Collections.Generic;
-using System.Text;
 
 namespace Identity.Infrastructure.Repositories
 {
-    public class UserRepository : IUserRepository
+    public class UserRepository : Repository<User>, IUserRepository
     {
-        private readonly IdentityDbContext _context;
         public UserRepository(IdentityDbContext context)
+            : base(context)
         {
-            _context = context;
         }
 
         public async Task<User?> GetByEmailAsync(string email)
         {
-            return await _context.Users.FirstOrDefaultAsync(x => x.Email == email);
+            return await Context.Users
+                .Include(x => x.UserRoles)
+                .ThenInclude(x => x.Role)
+                .FirstOrDefaultAsync(x => x.Email == email);
         }
     }
 }

@@ -1,6 +1,5 @@
-﻿using CV.Application.Certificates;
+using CV.Application.Certificates;
 using CV.Contracts.Certificates;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
 namespace CV.API.Controllers
@@ -9,71 +8,59 @@ namespace CV.API.Controllers
     [ApiController]
     public class CertificatesController : ControllerBase
     {
-        private readonly ICreateCertificateService _createService;
-        private readonly IGetCertificatesService _getService;
-        private readonly IGetCertificateByIdService _getByIdService;
-        private readonly IUpdateCertificateService _updateService;
-        private readonly IDeleteCertificateService _deleteService;
+        private readonly ICreateCertificateService _createCertificateService;
+        private readonly IGetCertificatesService _getCertificatesService;
+        private readonly IGetCertificateByIdService _getCertificateByIdService;
+        private readonly IUpdateCertificateService _updateCertificateService;
+        private readonly IDeleteCertificateService _deleteCertificateService;
 
         public CertificatesController(
-            ICreateCertificateService createService,
-            IGetCertificatesService getService,
-            IGetCertificateByIdService getByIdService,
-            IUpdateCertificateService updateService,
-            IDeleteCertificateService deleteService)
+            ICreateCertificateService createCertificateService,
+            IGetCertificatesService getCertificatesService,
+            IGetCertificateByIdService getCertificateByIdService,
+            IUpdateCertificateService updateCertificateService,
+            IDeleteCertificateService deleteCertificateService)
         {
-            _createService = createService;
-            _getService = getService;
-            _getByIdService = getByIdService;
-            _updateService = updateService;
-            _deleteService = deleteService;
+            _createCertificateService = createCertificateService;
+            _getCertificatesService = getCertificatesService;
+            _getCertificateByIdService = getCertificateByIdService;
+            _updateCertificateService = updateCertificateService;
+            _deleteCertificateService = deleteCertificateService;
         }
 
         [HttpPost]
-        public async Task<IActionResult> Create(CreateCertificateRequest request)
+        public async Task<IActionResult> Create([FromBody] CreateCertificateRequest request)
         {
-            var result = await _createService.CreateAsync(request);
-            return Ok(result);
+            var response = await _createCertificateService.CreateAsync(request);
+            return CreatedAtAction(nameof(GetById), new { id = response.Id }, response);
         }
 
         [HttpGet]
         public async Task<IActionResult> GetAll()
         {
-            var result = await _getService.GetAllAsync();
-            return Ok(result);
+            var response = await _getCertificatesService.GetAllAsync();
+            return Ok(response);
         }
 
         [HttpGet("{id:guid}")]
         public async Task<IActionResult> GetById(Guid id)
         {
-            var result = await _getByIdService.GetByIdAsync(id);
-
-            if (result is null)
-                return NotFound();
-
-            return Ok(result);
+            var response = await _getCertificateByIdService.GetByIdAsync(id);
+            return Ok(response);
         }
 
         [HttpPut("{id:guid}")]
-        public async Task<IActionResult> Update(Guid id, UpdateCertificateRequest request)
+        public async Task<IActionResult> Update(Guid id, [FromBody] UpdateCertificateRequest request)
         {
-            var result = await _updateService.UpdateAsync(id, request);
-
-            if (result is null)
-                return NotFound();
-
-            return Ok(result);
+            var response = await _updateCertificateService.UpdateAsync(id, request);
+            return Ok(response);
         }
 
         [HttpDelete("{id:guid}")]
         public async Task<IActionResult> Delete(Guid id)
         {
-            var result = await _deleteService.DeleteAsync(id);
-
-            if (result is null)
-                return NotFound();
-
-            return Ok(result);
+            await _deleteCertificateService.DeleteAsync(id);
+            return NoContent();
         }
     }
 }

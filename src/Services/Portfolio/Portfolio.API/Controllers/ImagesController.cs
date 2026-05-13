@@ -1,4 +1,3 @@
-﻿using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Portfolio.Application.Images;
 using Portfolio.Contracts.Images;
@@ -33,7 +32,7 @@ namespace Portfolio.API.Controllers
         public async Task<IActionResult> Create(CreateImageRequest request)
         {
             var result = await _createImageService.CreateAsync(request);
-            return Ok(result);
+            return CreatedAtAction(nameof(GetById), new { id = result.Id }, result);
         }
 
         [HttpGet]
@@ -47,10 +46,6 @@ namespace Portfolio.API.Controllers
         public async Task<IActionResult> GetById(Guid id)
         {
             var result = await _getImageByIdService.GetByIdAsync(id);
-
-            if (result is null)
-                return NotFound();
-
             return Ok(result);
         }
 
@@ -58,22 +53,14 @@ namespace Portfolio.API.Controllers
         public async Task<IActionResult> Update(Guid id, UpdateImageRequest request)
         {
             var result = await _updateImageService.UpdateAsync(id, request);
-
-            if (result is null)
-                return NotFound();
-
             return Ok(result);
         }
 
         [HttpDelete("{id:guid}")]
         public async Task<IActionResult> Delete(Guid id)
         {
-            var result = await _deleteImageService.DeleteAsync(id);
-
-            if (result is null)
-                return NotFound();
-
-            return Ok(result);
+            await _deleteImageService.DeleteAsync(id);
+            return NoContent();
         }
     }
 }

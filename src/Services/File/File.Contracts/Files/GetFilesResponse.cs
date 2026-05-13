@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-
-namespace File.Contracts.Files
+﻿namespace File.Contracts.Files
 {
     public class GetFilesResponse
     {

@@ -1,46 +1,30 @@
-﻿using CV.Application.Abstractions.Persistence;
+using AutoMapper;
+using CV.Application.Abstractions.Persistence;
+using CV.Application.Common.Exceptions;
 using CV.Contracts.Experiences;
-using System;
-using System.Collections.Generic;
-using System.Text;
 
 namespace CV.Application.Experiences
 {
     public class UpdateExperienceService : IUpdateExperienceService
     {
         private readonly IExperienceRepository _experienceRepository;
-        public UpdateExperienceService(IExperienceRepository experienceRepository)
+        private readonly IMapper _mapper;
+
+        public UpdateExperienceService(IExperienceRepository experienceRepository, IMapper mapper)
         {
             _experienceRepository = experienceRepository;
+            _mapper = mapper;
         }
 
-        public async Task<UpdateExperienceResponse?> UpdateAsync(Guid id, UpdateExperienceRequest request)
+        public async Task<UpdateExperienceResponse> UpdateAsync(Guid id, UpdateExperienceRequest request)
         {
             var experience = await _experienceRepository.GetByIdAsync(id);
+            Guard.AgainstNotFound(experience, ErrorMessages.ExperienceNotFound);
 
-            if (experience == null)
-                return null;
-
-            experience.CompanyName = request.CompanyName;
-            experience.Position = request.Position;
-            experience.StartDate = DateTime.SpecifyKind(request.StartDate,DateTimeKind.Utc);
-            experience.EndDate = request.EndDate.HasValue ? DateTime.SpecifyKind(request.EndDate.Value, DateTimeKind.Utc) : null;
-            experience.Description = request.Description;
-            experience.IsCurrent = request.IsCurrent;
-
+            _mapper.Map(request, experience);
             await _experienceRepository.UpdateAsync(experience);
 
-            return new UpdateExperienceResponse
-            {
-                Id = experience.Id,
-                CompanyName = experience.CompanyName,
-                Position = request.Position,
-                StartDate = request.StartDate,
-                EndDate = request.EndDate,
-                Description = request.Description,
-                IsCurrent = request.IsCurrent
-            };
-
+            return _mapper.Map<UpdateExperienceResponse>(experience);
         }
     }
 }

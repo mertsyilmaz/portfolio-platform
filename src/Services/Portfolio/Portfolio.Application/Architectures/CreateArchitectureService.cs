@@ -1,37 +1,26 @@
-﻿using Portfolio.Application.Abstractions.Persistence;
+using AutoMapper;
+using Portfolio.Application.Abstractions.Persistence;
 using Portfolio.Contracts.Architectures;
-using System;
-using System.Collections.Generic;
-using System.Runtime.InteropServices;
-using System.Text;
 using Portfolio.Domain.Entities;
 
 namespace Portfolio.Application.Architectures
 {
     public class CreateArchitectureService : ICreateArchitectureService
     {
-        private readonly IArchitectureRepository _repository;
+        private readonly IArchitectureRepository _architectureRepository;
+        private readonly IMapper _mapper;
 
-        public CreateArchitectureService(IArchitectureRepository repository)
+        public CreateArchitectureService(IArchitectureRepository architectureRepository, IMapper mapper)
         {
-            _repository = repository;
+            _architectureRepository = architectureRepository;
+            _mapper = mapper;
         }
 
         public async Task<CreateArchitectureResponse> CreateAsync(CreateArchitectureRequest request)
         {
-            var architecture = new Portfolio.Domain.Entities.Architecture
-            {
-                Id = Guid.NewGuid(),
-                Name = request.Name
-            };
-
-            await _repository.AddAsync(architecture);
-
-            return new CreateArchitectureResponse
-            {
-                Id = architecture.Id,
-                Name = architecture.Name
-            };
+            var architecture = _mapper.Map<Architecture>(request);
+            await _architectureRepository.AddAsync(architecture);
+            return _mapper.Map<CreateArchitectureResponse>(architecture);
         }
     }
 }

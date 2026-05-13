@@ -1,16 +1,8 @@
-﻿using Portfolio.Domain.Entities;
-using System;
-using System.Collections.Generic;
-using System.Text;
+using Portfolio.Domain.Entities;
 
 namespace Portfolio.Application.Abstractions.Persistence
 {
-    public interface IProjectRepository
+    public interface IProjectRepository : IRepository<Project>
     {
-        Task AddAsync(Project project);
-        Task<List<Project>> GetAllAsync();
-        Task<Project?> GetByIdAsync(Guid id);
-        Task UpdateAsync(Project project);
-        Task DeleteAsync(Project project);
     }
 }

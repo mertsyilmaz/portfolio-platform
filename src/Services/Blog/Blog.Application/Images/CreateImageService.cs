@@ -1,12 +1,8 @@
 ﻿using AutoMapper;
 using Blog.Application.Abstractions.Persistence;
-using Blog.Application.Abstractions.Services;
-using Blog.Application.Common.Exceptions;
+using Blog.Application.Abstractions.Rules;
 using Blog.Contracts.Images;
 using Blog.Domain.Entities;
-using System;
-using System.Collections.Generic;
-using System.Text;
 
 
 namespace Blog.Application.Images
@@ -14,36 +10,25 @@ namespace Blog.Application.Images
     public class CreateImageService : ICreateImageService
     {
         private readonly IImageRepository _imageRepository;
-        private readonly IPostRepository _postRepository;
-        private readonly IFileService _fileService;
         private readonly IMapper _mapper;
+        private readonly IBlogReferenceValidationService _referenceValidationService;
 
         public CreateImageService(
             IImageRepository imageRepository,
-            IPostRepository postRepository,
-            IFileService fileService,
-            IMapper mapper)
+            IMapper mapper,
+            IBlogReferenceValidationService referenceValidationService)
         {
             _imageRepository = imageRepository;
-            _postRepository = postRepository;
-            _fileService = fileService;
             _mapper = mapper;
+            _referenceValidationService = referenceValidationService;
         }
 
         public async Task<CreateImageResponse> CreateAsync(CreateImageRequest request)
         {
-            var post = await _postRepository.GetByIdAsync(request.PostId);
-
-            if (post == null)
-                throw new NotFoundException("Post not found.");
-
-            var fileExists = await _fileService.ExistsAsync(request.FileId);
-
-            if (!fileExists)
-                throw new ValidationException("File not found.");
+            await _referenceValidationService.GetRequiredPostAsync(request.PostId);
+            await _referenceValidationService.ValidateFileExistsAsync(request.FileId);
 
             var image = _mapper.Map<Image>(request);
-            image.CreatedAt = DateTime.UtcNow;
 
             await _imageRepository.AddAsync(image);
 

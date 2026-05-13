@@ -1,0 +1,6 @@
+@PortfolioPlatform.ApiGateway_HostAddress = http://localhost:5271
+
+GET {{PortfolioPlatform.ApiGateway_HostAddress}}/weatherforecast/
+Accept: application/json
+
+###

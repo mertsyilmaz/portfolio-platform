@@ -1,7 +1,4 @@
-﻿using CV.Contracts.Skills;
-using System;
-using System.Collections.Generic;
-using System.Text;
+using CV.Contracts.Skills;
 
 namespace CV.Application.Skills
 {

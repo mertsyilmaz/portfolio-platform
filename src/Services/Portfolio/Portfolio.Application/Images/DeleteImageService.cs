@@ -1,8 +1,5 @@
-﻿using Portfolio.Application.Abstractions.Persistence;
-using Portfolio.Contracts.Images;
-using System;
-using System.Collections.Generic;
-using System.Text;
+using Portfolio.Application.Abstractions.Persistence;
+using Portfolio.Application.Common.Exceptions;
 
 namespace Portfolio.Application.Images
 {
@@ -15,20 +12,12 @@ namespace Portfolio.Application.Images
             _imageRepository = imageRepository;
         }
 
-        public async Task<DeleteImageResponse?> DeleteAsync(Guid id)
+        public async Task DeleteAsync(Guid id)
         {
             var image = await _imageRepository.GetByIdAsync(id);
-
-            if (image == null)
-                return null;
+            Guard.AgainstNotFound(image, ErrorMessages.ImageNotFound);
 
             await _imageRepository.DeleteAsync(image);
-
-            return new DeleteImageResponse
-            {
-                Id = image.Id,
-                IsDeleted = true
-            };
         }
     }
 }

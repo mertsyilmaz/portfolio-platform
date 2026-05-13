@@ -1,9 +1,6 @@
-﻿using File.Application.Abstractions.Persistence;
+using File.Application.Abstractions.Persistence;
 using File.Application.Abstractions.Storage;
-using File.Contracts.Files;
-using System;
-using System.Collections.Generic;
-using System.Text;
+using File.Application.Common.Exceptions;
 
 namespace File.Application.Files
 {
@@ -18,21 +15,13 @@ namespace File.Application.Files
             _fileStorageService = fileStorageService;
         }
 
-        public async Task<DeleteFileResponse> DeleteAsync(Guid id)
+        public async Task DeleteAsync(Guid id)
         {
             var file = await _fileRepository.GetByIdAsync(id);
-
-            if (file is null)
-                return null;
+            Guard.AgainstNotFound(file, ErrorMessages.FileNotFound);
 
             await _fileStorageService.DeleteAsync(file.RelativePath);
             await _fileRepository.DeleteAsync(file);
-
-            return new DeleteFileResponse
-            {
-                Id = id,
-                IsDeleted = true
-            };
         }
     }
 }

@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-
-namespace Portfolio.Contracts.Projects
+﻿namespace Portfolio.Contracts.Projects
 {
     public class UpdateProjectResponse
     {

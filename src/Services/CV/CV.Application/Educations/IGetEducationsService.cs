@@ -1,7 +1,4 @@
-﻿using CV.Contracts.Educations;
-using System;
-using System.Collections.Generic;
-using System.Text;
+using CV.Contracts.Educations;
 
 namespace CV.Application.Educations
 {

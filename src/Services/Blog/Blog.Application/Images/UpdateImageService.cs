@@ -1,11 +1,8 @@
 ﻿using AutoMapper;
 using Blog.Application.Abstractions.Persistence;
-using Blog.Application.Abstractions.Services;
+using Blog.Application.Abstractions.Rules;
 using Blog.Application.Common.Exceptions;
 using Blog.Contracts.Images;
-using System;
-using System.Collections.Generic;
-using System.Text;
 
 
 namespace Blog.Application.Images
@@ -13,30 +10,25 @@ namespace Blog.Application.Images
     public class UpdateImageService : IUpdateImageService
     {
         private readonly IImageRepository _imageRepository;
-        private readonly IFileService _fileService;
+        private readonly IBlogReferenceValidationService _referenceValidationService;
         private readonly IMapper _mapper;
 
-        public UpdateImageService(IImageRepository imageRepository, IFileService fileService, IMapper mapper)
+        public UpdateImageService(IImageRepository imageRepository, IMapper mapper, IBlogReferenceValidationService referenceValidationService)
         {
             _imageRepository = imageRepository;
-            _fileService = fileService;
             _mapper = mapper;
+            _referenceValidationService = referenceValidationService;
         }
 
         public async Task<UpdateImageResponse> UpdateAsync(Guid id, UpdateImageRequest request)
         {
             var image = await _imageRepository.GetByIdAsync(id);
 
-            if (image == null)
-                throw new NotFoundException("Image not found.");
+            Guard.AgainstNotFound(image, ErrorMessages.ImageNotFound);
 
-            var fileExists = await _fileService.ExistsAsync(request.FileId);
-
-            if (!fileExists)
-                throw new ValidationException("File not found.");
+            await _referenceValidationService.ValidateFileExistsAsync(request.FileId);
 
             _mapper.Map(request, image);
-            image.UpdatedAt = DateTime.UtcNow;
 
             await _imageRepository.UpdateAsync(image);
 

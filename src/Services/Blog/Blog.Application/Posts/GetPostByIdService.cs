@@ -1,14 +1,7 @@
 ﻿using AutoMapper;
 using Blog.Application.Abstractions.Persistence;
 using Blog.Application.Common.Exceptions;
-using Blog.Contracts.Categories;
-using Blog.Contracts.Comments;
-using Blog.Contracts.Images;
 using Blog.Contracts.Posts;
-using Blog.Contracts.Tags;
-using System;
-using System.Collections.Generic;
-using System.Text;
 
 namespace Blog.Application.Posts
 {
@@ -27,8 +20,7 @@ namespace Blog.Application.Posts
         {
             var post = await _postRepository.GetByIdAsync(id);
 
-            if (post == null)
-                throw new NotFoundException("Post not found");
+            Guard.AgainstNotFound(post, ErrorMessages.PostNotFound);
 
             return _mapper.Map<GetPostByIdResponse>(post);
         }

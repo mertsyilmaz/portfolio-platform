@@ -1,32 +1,26 @@
-﻿using Portfolio.Application.Abstractions.Persistence;
-
+using AutoMapper;
+using Portfolio.Application.Abstractions.Persistence;
+using Portfolio.Application.Common.Exceptions;
 using Portfolio.Contracts.Technologies;
-using System;
-using System.Collections.Generic;
-using System.Text;
 
 namespace Portfolio.Application.Technologies
 {
     public class GetTechnologyByIdService : IGetTechnologyByIdService
     {
         private readonly ITechnologyRepository _technologyRepository;
+        private readonly IMapper _mapper;
 
-        public GetTechnologyByIdService(ITechnologyRepository technologyRepository)
+        public GetTechnologyByIdService(ITechnologyRepository technologyRepository, IMapper mapper)
         {
             _technologyRepository = technologyRepository;
+            _mapper = mapper;
         }
-        public async Task<GetTechnologyByIdResponse?> GetByIdAsync(Guid id)
+
+        public async Task<GetTechnologyByIdResponse> GetByIdAsync(Guid id)
         {
-            var category  = await _technologyRepository.GetByIdAsync(id);
-
-            if (category == null) 
-                return null;
-
-            return new GetTechnologyByIdResponse
-            {
-                Id = category.Id,
-                Name = category.Name
-            };
+            var technology = await _technologyRepository.GetByIdAsync(id);
+            Guard.AgainstNotFound(technology, ErrorMessages.TechnologyNotFound);
+            return _mapper.Map<GetTechnologyByIdResponse>(technology);
         }
     }
 }

@@ -1,32 +1,26 @@
-﻿using Portfolio.Application.Abstractions.Persistence;
+using AutoMapper;
+using Portfolio.Application.Abstractions.Persistence;
+using Portfolio.Application.Common.Exceptions;
 using Portfolio.Contracts.Architectures;
-using System;
-using System.Collections.Generic;
-using System.Text;
 
 namespace Portfolio.Application.Architectures
 {
     public class GetArchitectureByIdService : IGetArchitectureByIdService
     {
-        private readonly IArchitectureRepository _repository;
+        private readonly IArchitectureRepository _architectureRepository;
+        private readonly IMapper _mapper;
 
-        public GetArchitectureByIdService(IArchitectureRepository repository)
+        public GetArchitectureByIdService(IArchitectureRepository architectureRepository, IMapper mapper)
         {
-            _repository = repository;
+            _architectureRepository = architectureRepository;
+            _mapper = mapper;
         }
 
         public async Task<GetArchitectureByIdResponse> GetByIdAsync(Guid id)
         {
-            var architecture = await _repository.GetByIdAsync(id);
-
-            if (architecture == null)
-                return null;
-
-            return new GetArchitectureByIdResponse
-            {
-                Id = architecture.Id,
-                Name = architecture.Name
-            };
+            var architecture = await _architectureRepository.GetByIdAsync(id);
+            Guard.AgainstNotFound(architecture, ErrorMessages.ArchitectureNotFound);
+            return _mapper.Map<GetArchitectureByIdResponse>(architecture);
         }
     }
 }

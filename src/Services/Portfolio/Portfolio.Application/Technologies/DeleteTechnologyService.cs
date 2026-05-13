@@ -1,8 +1,5 @@
-﻿using Portfolio.Application.Abstractions.Persistence;
-using Portfolio.Contracts.Technologies;
-using System;
-using System.Collections.Generic;
-using System.Text;
+using Portfolio.Application.Abstractions.Persistence;
+using Portfolio.Application.Common.Exceptions;
 
 namespace Portfolio.Application.Technologies
 {
@@ -15,20 +12,12 @@ namespace Portfolio.Application.Technologies
             _technologyRepository = technologyRepository;
         }
 
-        public async Task<DeleteTechnologyResponse?> DeleteAsync(Guid id)
+        public async Task DeleteAsync(Guid id)
         {
             var technology = await _technologyRepository.GetByIdAsync(id);
-
-            if (technology == null) 
-                return null;
+            Guard.AgainstNotFound(technology, ErrorMessages.TechnologyNotFound);
 
             await _technologyRepository.DeleteAsync(technology);
-
-            return new DeleteTechnologyResponse
-            {
-                Id = technology.Id,
-                IsDeleted = true
-            };
         }
     }
 }

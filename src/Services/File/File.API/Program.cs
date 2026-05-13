@@ -1,42 +1,34 @@
-using File.Application.Abstractions.Persistence;
-using File.Application.Abstractions.Storage;
-using File.Application.Files;
-using File.Infrastructure.Persistence;
-using File.Infrastructure.Repositories;
-using File.Infrastructure.Storage;
-using Microsoft.EntityFrameworkCore;
+using File.API.Extensions;
+using File.API.Validators;
+using File.Application;
+using File.Infrastructure;
+using FluentValidation;
+using FluentValidation.AspNetCore;
 
 var builder = WebApplication.CreateBuilder(args);
-
-// Add services to the container.
 
 builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
+builder.Services.AddProblemDetails();
 
-builder.Services.AddDbContext<FileDbContext>(options =>
-    options.UseNpgsql(builder.Configuration.GetConnectionString("DefaultConnection")));
-
-builder.Services.AddScoped<IFileRepository, FileRepository>();
-builder.Services.AddScoped<IFileStorageService, DiskFileStorageService>();
-builder.Services.AddScoped<IUploadFileService, UploadFileService>();
-builder.Services.AddScoped<IGetFilesService, GetFilesService>();
-builder.Services.AddScoped<IGetFileByIdService, GetFileByIdService>();
-builder.Services.AddScoped<IDeleteFileService, DeleteFileService>();
+builder.Services.AddValidatorsFromAssemblyContaining<UploadFileFormRequestValidator>();
+builder.Services.AddFluentValidationAutoValidation();
+builder.Services.AddApplicationServices();
+builder.Services.AddInfrastructureServices(builder.Configuration);
 
 var app = builder.Build();
 
-// Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
 {
     app.UseSwagger();
     app.UseSwaggerUI();
 }
 
+app.UseGlobalExceptionHandling();
+
 app.UseHttpsRedirection();
-
 app.UseAuthorization();
-
 app.MapControllers();
 
 app.Run();

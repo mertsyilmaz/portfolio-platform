@@ -2,9 +2,6 @@
 using Blog.Application.Abstractions.Persistence;
 using Blog.Application.Common.Exceptions;
 using Blog.Contracts.Images;
-using System;
-using System.Collections.Generic;
-using System.Text;
 
 
 namespace Blog.Application.Images
@@ -24,8 +21,7 @@ namespace Blog.Application.Images
         {
             var image = await _imageRepository.GetByIdAsync(id);
 
-            if (image == null)
-                throw new NotFoundException("Image not found.");
+            Guard.AgainstNotFound(image, ErrorMessages.ImageNotFound);
 
             return _mapper.Map<GetImagesResponse>(image);
         }

@@ -1,34 +1,22 @@
-﻿using CV.Application.Abstractions.Persistence;
-using CV.Contracts.SocialLinks;
-using System;
-using System.Collections.Generic;
-using System.Text;
+using CV.Application.Abstractions.Persistence;
+using CV.Application.Common.Exceptions;
 
 namespace CV.Application.SocialLinks
 {
     public class DeleteSocialLinkService : IDeleteSocialLinkService
     {
-        private readonly ISocialLinkRepository _repository;
+        private readonly ISocialLinkRepository _socialLinkRepository;
 
-        public DeleteSocialLinkService(ISocialLinkRepository repository)
+        public DeleteSocialLinkService(ISocialLinkRepository socialLinkRepository)
         {
-            _repository = repository;
+            _socialLinkRepository = socialLinkRepository;
         }
 
-        public async Task<DeleteSocialLinkResponse?> DeleteAsync(Guid id)
+        public async Task DeleteAsync(Guid id)
         {
-            var entity = await _repository.GetByIdAsync(id);
-
-            if (entity is null)
-                return null;
-
-            await _repository.DeleteAsync(entity);
-
-            return new DeleteSocialLinkResponse
-            {
-                Id = id,
-                IsDeleted = true
-            };
+            var socialLink = await _socialLinkRepository.GetByIdAsync(id);
+            Guard.AgainstNotFound(socialLink, ErrorMessages.SocialLinkNotFound);
+            await _socialLinkRepository.DeleteAsync(socialLink);
         }
     }
 }

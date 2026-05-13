@@ -1,9 +1,6 @@
 ﻿using AutoMapper;
 using Blog.Application.Abstractions.Persistence;
 using Blog.Contracts.Categories;
-using System;
-using System.Collections.Generic;
-using System.Text;
 
 namespace Blog.Application.Categories
 {

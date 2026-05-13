@@ -1,15 +1,13 @@
-﻿using Identity.Domain.Entities;
+using Identity.Application.Abstractions.Security;
+using Identity.Domain.Entities;
 using Identity.Infrastructure.Persistence;
 using Microsoft.EntityFrameworkCore;
-using System;
-using System.Collections.Generic;
-using System.Text;
 
 namespace Identity.Infrastructure.Seed
 {
     public static class IdentityDataSeeder
     {
-        public static async Task SeedAsync(IdentityDbContext context)
+        public static async Task SeedAsync(IdentityDbContext context, IPasswordService passwordService)
         {
             if (await context.Users.AnyAsync())
             {
@@ -29,16 +27,16 @@ namespace Identity.Infrastructure.Seed
                 FirstName = "Admin",
                 LastName = "User",
                 Email = "admin@portfolio.com",
-                PasswordHash = "12345",
-                IsActive = true,
-                CreatedAt = DateTime.UtcNow
+                IsActive = true
             };
 
-            var userRole = new UserRole { 
+            adminUser.PasswordHash = passwordService.HashPassword(adminUser, "12345");
+
+            var userRole = new UserRole
+            {
                 UserId = adminUser.Id,
                 RoleId = adminRole.Id
             };
-
 
             await context.Roles.AddAsync(adminRole);
             await context.Users.AddAsync(adminUser);

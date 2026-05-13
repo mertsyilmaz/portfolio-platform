@@ -1,4 +1,5 @@
 services:
+
   postgres:
     image: postgres:15
     container_name: portfolio-postgres
@@ -10,6 +11,87 @@ services:
       - "5432:5432"
     volumes:
       - postgres_data:/var/lib/postgresql/data
+
+  file-api:
+    build:
+      context: ../../
+      dockerfile: src/Services/File/File.API/Dockerfile
+    container_name: file-api
+    ports:
+      - "5272:8080"
+    depends_on:
+      - postgres
+
+  blog-api:
+    build:
+      context: ../../
+      dockerfile: src/Services/Blog/Blog.API/Dockerfile
+    container_name: blog-api
+    ports:
+      - "5273:8080"
+    environment:
+      Services__File__BaseUrl: "http://file-api:8080"
+      Services__File__TimeoutSeconds: "30"
+    depends_on:
+      - postgres
+      - file-api
+
+  cv-api:
+    build:
+      context: ../../
+      dockerfile: src/Services/CV/CV.API/Dockerfile
+    container_name: cv-api
+    ports:
+      - "5274:8080"
+    environment:
+      Services__File__BaseUrl: "http://file-api:8080"
+      Services__File__TimeoutSeconds: "30"
+    depends_on:
+      - postgres
+      - file-api
+
+  portfolio-api:
+    build:
+      context: ../../
+      dockerfile: src/Services/Portfolio/Portfolio.API/Dockerfile
+    container_name: portfolio-api
+    ports:
+      - "5275:8080"
+    environment:
+      Services__File__BaseUrl: "http://file-api:8080"
+      Services__File__TimeoutSeconds: "30"
+    depends_on:
+      - postgres
+      - file-api
+
+  identity-api:
+    build:
+      context: ../../
+      dockerfile: src/Services/Identity/Identity.API/Dockerfile
+    container_name: identity-api
+    ports:
+      - "5156:8080"
+    environment:
+      ConnectionStrings__DefaultConnection: "Host=postgres;Port=5432;Database=identitydb;Username=postgres;Password=postgres"
+      Jwt__Key: "SuperSecretKey1234567890SuperSecretKey"
+      Jwt__Issuer: "PortfolioPlatform"
+      Jwt__Audience: "PortfolioPlatformUsers"
+    depends_on:
+      - postgres
+
+  api-gateway:
+    build:
+      context: ../../
+      dockerfile: src/ApiGateway/PortfolioPlatform.ApiGateway/Dockerfile
+    container_name: api-gateway
+    ports:
+      - "5271:8080"
+    depends_on:
+      - blog-api
+      - cv-api
+      - portfolio-api
+      - file-api
+      - identity-api
 
 volumes:
   postgres_data:

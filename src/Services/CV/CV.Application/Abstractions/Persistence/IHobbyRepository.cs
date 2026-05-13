@@ -1,20 +1,8 @@
-﻿using CV.Domain.Entities;
-using System;
-using System.Collections.Generic;
-using System.Text;
+using CV.Domain.Entities;
 
 namespace CV.Application.Abstractions.Persistence
 {
-    public interface IHobbyRepository
+    public interface IHobbyRepository : IRepository<Hobby>
     {
-        Task AddAsync(Hobby hobby);
-
-        Task<List<Hobby>> GetAllAsync();
-
-        Task<Hobby?> GetByIdAsync(Guid id);
-
-        Task UpdateAsync(Hobby hobby);
-
-        Task DeleteAsync(Hobby hobby);
     }
 }

@@ -1,20 +1,8 @@
-﻿using CV.Domain.Entities;
-using System;
-using System.Collections.Generic;
-using System.Text;
+using CV.Domain.Entities;
 
 namespace CV.Application.Abstractions.Persistence
 {
-    public interface ILanguageRepository
+    public interface ILanguageRepository : IRepository<Language>
     {
-        Task AddAsync(Language language);
-
-        Task<List<Language>> GetAllAsync();
-
-        Task<Language?> GetByIdAsync(Guid id);
-
-        Task UpdateAsync(Language language);
-
-        Task DeleteAsync(Language language);
     }
 }

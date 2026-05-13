@@ -2,9 +2,6 @@
 using Blog.Application.Abstractions.Persistence;
 using Blog.Application.Common.Exceptions;
 using Blog.Contracts.Categories;
-using System;
-using System.Collections.Generic;
-using System.Text;
 
 namespace Blog.Application.Categories
 {
@@ -23,8 +20,7 @@ namespace Blog.Application.Categories
         {
             var category = await _categoryRepository.GetByIdAsync(id);
 
-            if (category == null)
-                throw new NotFoundException("Category not found.");
+            Guard.AgainstNotFound(category, ErrorMessages.CategoryNotFound);
 
             _mapper.Map(request, category);
 

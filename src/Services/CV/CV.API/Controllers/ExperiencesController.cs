@@ -1,7 +1,6 @@
-﻿using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Mvc;
 using CV.Application.Experiences;
 using CV.Contracts.Experiences;
+using Microsoft.AspNetCore.Mvc;
 
 namespace CV.API.Controllers
 {
@@ -15,7 +14,12 @@ namespace CV.API.Controllers
         private readonly IUpdateExperienceService _updateExperienceService;
         private readonly IDeleteExperienceService _deleteExperienceService;
 
-        public ExperiencesController(ICreateExperienceService createExperienceService, IGetExperienceService getExperienceService, IGetExperienceByIdService getExperienceByIdService, IUpdateExperienceService updateExperienceService, IDeleteExperienceService deleteExperienceService)
+        public ExperiencesController(
+            ICreateExperienceService createExperienceService,
+            IGetExperienceService getExperienceService,
+            IGetExperienceByIdService getExperienceByIdService,
+            IUpdateExperienceService updateExperienceService,
+            IDeleteExperienceService deleteExperienceService)
         {
             _createExperienceService = createExperienceService;
             _getExperienceService = getExperienceService;
@@ -28,7 +32,7 @@ namespace CV.API.Controllers
         public async Task<IActionResult> Create([FromBody] CreateExperienceRequest request)
         {
             var response = await _createExperienceService.CreateAsync(request);
-            return Ok(response);
+            return CreatedAtAction(nameof(GetById), new { id = response.Id }, response);
         }
 
         [HttpGet]
@@ -42,10 +46,6 @@ namespace CV.API.Controllers
         public async Task<IActionResult> GetById(Guid id)
         {
             var response = await _getExperienceByIdService.GetByIdAsync(id);
-
-            if (response is null)
-                return NotFound();
-
             return Ok(response);
         }
 
@@ -53,22 +53,14 @@ namespace CV.API.Controllers
         public async Task<IActionResult> Update(Guid id, [FromBody] UpdateExperienceRequest request)
         {
             var response = await _updateExperienceService.UpdateAsync(id, request);
-
-            if (response is null)
-                return NotFound();
-
             return Ok(response);
         }
 
         [HttpDelete("{id:guid}")]
         public async Task<IActionResult> Delete(Guid id)
         {
-            var response = await _deleteExperienceService.DeleteAsync(id);
-
-            if (response is null)
-                return NotFound();
-
-            return Ok(response);
+            await _deleteExperienceService.DeleteAsync(id);
+            return NoContent();
         }
     }
 }

@@ -1,7 +1,4 @@
 ﻿using File.Application.Abstractions.Storage;
-using System;
-using System.Collections.Generic;
-using System.Text;
 
 namespace File.Infrastructure.Storage
 {
@@ -29,7 +26,7 @@ namespace File.Infrastructure.Storage
             return Task.CompletedTask;
         }
 
-        public async Task<(string StoredFileName, string RelativePath)> SaveAsync(Stream fileStream,string fileName,string folderName)
+        public async Task<(string StoredFileName, string RelativePath)> SaveAsync(Stream fileStream, string fileName, string folderName)
         {
             var extension = Path.GetExtension(fileName);
             var storedFileName = $"{Guid.NewGuid()}{extension}";

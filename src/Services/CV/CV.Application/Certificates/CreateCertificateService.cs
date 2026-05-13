@@ -1,41 +1,26 @@
-﻿using CV.Application.Abstractions.Persistence;
+using AutoMapper;
+using CV.Application.Abstractions.Persistence;
 using CV.Contracts.Certificates;
 using CV.Domain.Entities;
-using System;
-using System.Collections.Generic;
-using System.Text;
 
 namespace CV.Application.Certificates
 {
     public class CreateCertificateService : ICreateCertificateService
     {
         private readonly ICertificateRepository _certificateRepository;
+        private readonly IMapper _mapper;
 
-        public CreateCertificateService(ICertificateRepository certificateRepository)
+        public CreateCertificateService(ICertificateRepository certificateRepository, IMapper mapper)
         {
             _certificateRepository = certificateRepository;
+            _mapper = mapper;
         }
 
         public async Task<CreateCertificateResponse> CreateAsync(CreateCertificateRequest request)
         {
-            var certificate = new Certificate
-            {
-                Id = Guid.NewGuid(),
-                Name = request.Name,
-                Issuer = request.Issuer,
-                IssuedDate = request.IssuedDate,
-                CredentialId = request.CredentialId,
-                CredentialUrl = request.CredentialUrl,
-                CreatedAt = DateTime.UtcNow
-            };
-
+            var certificate = _mapper.Map<Certificate>(request);
             await _certificateRepository.AddAsync(certificate);
-
-            return new CreateCertificateResponse { 
-                Id = certificate.Id,
-                Name = request.Name,
-                Issuer = certificate.Issuer
-            };
+            return _mapper.Map<CreateCertificateResponse>(certificate);
         }
     }
 }

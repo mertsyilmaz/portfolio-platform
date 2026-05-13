@@ -1,9 +1,6 @@
 ﻿using Blog.Contracts.Categories;
 using Blog.Contracts.Images;
 using Blog.Contracts.Tags;
-using System;
-using System.Collections.Generic;
-using System.Text;
 
 namespace Blog.Contracts.Posts
 {

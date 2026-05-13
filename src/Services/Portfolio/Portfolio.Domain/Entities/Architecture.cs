@@ -1,12 +1,9 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
+using Portfolio.Domain.Common;
 
 namespace Portfolio.Domain.Entities
 {
-    public class Architecture
+    public class Architecture : Entity
     {
-        public Guid Id { get; set; }
         public string Name { get; set; } = null!;
 
         public List<Project> Projects { get; set; } = new();

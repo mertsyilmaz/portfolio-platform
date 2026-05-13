@@ -1,20 +1,8 @@
-﻿using CV.Domain.Entities;
-using System;
-using System.Collections.Generic;
-using System.Text;
+using CV.Domain.Entities;
 
 namespace CV.Application.Abstractions.Persistence
 {
-    public interface IExperienceRepository
+    public interface IExperienceRepository : IRepository<Experience>
     {
-        Task AddAsync(Experience experience);
-
-        Task<List<Experience>> GetAllAsync();
-
-        Task<Experience?> GetByIdAsync(Guid id);
-
-        Task UpdateAsync(Experience experience);
-
-        Task DeleteAsync(Experience experience);
     }
 }

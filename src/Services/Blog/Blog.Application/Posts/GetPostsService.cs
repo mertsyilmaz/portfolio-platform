@@ -1,12 +1,6 @@
 ﻿using AutoMapper;
 using Blog.Application.Abstractions.Persistence;
-using Blog.Contracts.Categories;
-using Blog.Contracts.Images;
 using Blog.Contracts.Posts;
-using Blog.Contracts.Tags;
-using System;
-using System.Collections.Generic;
-using System.Text;
 
 namespace Blog.Application.Posts
 {

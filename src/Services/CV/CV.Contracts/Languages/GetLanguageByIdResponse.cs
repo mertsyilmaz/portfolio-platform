@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-
-namespace CV.Contracts.Languages
+﻿namespace CV.Contracts.Languages
 {
     public class GetLanguageByIdResponse
     {

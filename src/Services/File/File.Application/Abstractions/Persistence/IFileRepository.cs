@@ -1,18 +1,8 @@
-﻿using File.Domain.Entities;
-using System;
-using System.Collections.Generic;
-using System.Text;
+using File.Domain.Entities;
 
 namespace File.Application.Abstractions.Persistence
 {
-    public interface IFileRepository
+    public interface IFileRepository : IRepository<FileRecord>
     {
-        Task AddAsync(FileRecord fileRecord);
-
-        Task<List<FileRecord>> GetAllAsync();
-
-        Task<FileRecord?> GetByIdAsync(Guid id);
-
-        Task DeleteAsync(FileRecord fileRecord);
     }
 }

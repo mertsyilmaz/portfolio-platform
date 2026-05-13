@@ -1,9 +1,5 @@
 ﻿using Blog.Application.Abstractions.Persistence;
 using Blog.Application.Common.Exceptions;
-using Blog.Contracts.Tags;
-using System;
-using System.Collections.Generic;
-using System.Text;
 
 namespace Blog.Application.Tags
 {
@@ -16,20 +12,14 @@ namespace Blog.Application.Tags
             _tagRepository = tagRepository;
         }
 
-        public async Task<DeleteTagResponse> DeleteAsync(Guid id)
+        public async Task DeleteAsync(Guid id)
         {
             var tag = await _tagRepository.GetByIdAsync(id);
 
-            if (tag == null)
-                throw new NotFoundException("Tag not found.");
+            Guard.AgainstNotFound(tag, ErrorMessages.TagNotFound);
 
             await _tagRepository.DeleteAsync(tag);
 
-            return new DeleteTagResponse
-            {
-                Id = id,
-                IsDeleted = true
-            };
         }
     }
 }

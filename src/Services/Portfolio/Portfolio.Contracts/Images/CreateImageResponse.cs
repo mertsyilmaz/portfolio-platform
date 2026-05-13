@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-
-namespace Portfolio.Contracts.Images
+﻿namespace Portfolio.Contracts.Images
 {
     public class CreateImageResponse
     {

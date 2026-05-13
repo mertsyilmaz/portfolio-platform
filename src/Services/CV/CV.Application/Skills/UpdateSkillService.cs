@@ -1,39 +1,28 @@
-﻿using CV.Application.Abstractions.Persistence;
+using AutoMapper;
+using CV.Application.Abstractions.Persistence;
+using CV.Application.Common.Exceptions;
 using CV.Contracts.Skills;
-using System;
-using System.Collections.Generic;
-using System.Text;
 
 namespace CV.Application.Skills
 {
     public class UpdateSkillService : IUpdateSkillService
     {
         private readonly ISkillRepository _skillRepository;
-        public UpdateSkillService(ISkillRepository skillRepository)
+        private readonly IMapper _mapper;
+
+        public UpdateSkillService(ISkillRepository skillRepository, IMapper mapper)
         {
             _skillRepository = skillRepository;
+            _mapper = mapper;
         }
 
-        public async Task<UpdateSkillResponse?> UpdateAsync(Guid id, UpdateSkillRequest request)
+        public async Task<UpdateSkillResponse> UpdateAsync(Guid id, UpdateSkillRequest request)
         {
             var skill = await _skillRepository.GetByIdAsync(id);
-
-            if(skill == null) 
-                return null;
-
-            skill.Name = request.Name;
-            skill.Level = request.Level;
-            skill.Category = request.Category;
-
+            Guard.AgainstNotFound(skill, ErrorMessages.SkillNotFound);
+            _mapper.Map(request, skill);
             await _skillRepository.UpdateAsync(skill);
-
-            return new UpdateSkillResponse
-            {
-                Id = skill.Id,
-                Name = request.Name,
-                Category = request.Category,
-                Level = request.Level
-            };
+            return _mapper.Map<UpdateSkillResponse>(skill);
         }
     }
 }

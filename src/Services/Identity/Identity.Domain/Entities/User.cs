@@ -1,20 +1,14 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
+using Identity.Domain.Common;
 
 namespace Identity.Domain.Entities
 {
-    public class User
+    public class User : CreatableEntity
     {
-        public Guid Id { get; set; }
-        public string FirstName { get; set; }
-        public string LastName { get; set; }
-        public string Email { get; set; }
-        public string PasswordHash { get; set; }
+        public string FirstName { get; set; } = null!;
+        public string LastName { get; set; } = null!;
+        public string Email { get; set; } = null!;
+        public string PasswordHash { get; set; } = null!;
         public bool IsActive { get; set; }
-        public DateTime CreatedAt { get; set; }
-
         public ICollection<UserRole> UserRoles { get; set; } = new List<UserRole>();
-
     }
 }

@@ -1,39 +1,26 @@
-﻿using CV.Application.Abstractions.Persistence;
+using AutoMapper;
+using CV.Application.Abstractions.Persistence;
+using CV.Application.Common.Exceptions;
 using CV.Contracts.Experiences;
-using System;
-using System.Collections.Generic;
-using System.Text;
 
 namespace CV.Application.Experiences
 {
     public class GetExperienceByIdService : IGetExperienceByIdService
     {
         private readonly IExperienceRepository _experienceRepository;
-        public GetExperienceByIdService(IExperienceRepository experienceRepository)
+        private readonly IMapper _mapper;
+
+        public GetExperienceByIdService(IExperienceRepository experienceRepository, IMapper mapper)
         {
             _experienceRepository = experienceRepository;
+            _mapper = mapper;
         }
 
-        public async Task<GetExperienceByIdResponse?> GetByIdAsync(Guid id)
+        public async Task<GetExperienceByIdResponse> GetByIdAsync(Guid id)
         {
             var experience = await _experienceRepository.GetByIdAsync(id);
-
-            if (experience is null)
-            {
-                return null;
-            }
-
-            return new GetExperienceByIdResponse
-            {
-                Id = experience.Id,
-                CompanyName = experience.CompanyName,
-                Position = experience.Position,
-                StartDate = experience.StartDate,
-                EndDate = experience.EndDate,
-                Description = experience.Description,
-                IsCurrent = experience.IsCurrent,
-                CreatedAt = experience.CreatedAt
-            };
+            Guard.AgainstNotFound(experience, ErrorMessages.ExperienceNotFound);
+            return _mapper.Map<GetExperienceByIdResponse>(experience);
         }
     }
 }

@@ -1,8 +1,6 @@
-﻿using CV.Application.Abstractions.Services;
-using System;
-using System.Collections.Generic;
+using CV.Application.Abstractions.Services;
+using CV.Application.Common.Exceptions;
 using System.Net;
-using System.Text;
 
 namespace CV.Infrastructure.Services
 {
@@ -25,7 +23,7 @@ namespace CV.Infrastructure.Services
             if (response.StatusCode == HttpStatusCode.NotFound)
                 return false;
 
-            throw new Exception("File service request failed.");
+            throw new ExternalServiceException(ErrorMessages.FileServiceRequestFailed);
         }
     }
 }

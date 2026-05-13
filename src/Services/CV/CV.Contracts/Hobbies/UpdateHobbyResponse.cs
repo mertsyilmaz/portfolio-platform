@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-
-namespace CV.Contracts.Hobbies
+﻿namespace CV.Contracts.Hobbies
 {
     public class UpdateHobbyResponse
     {

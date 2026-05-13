@@ -2,9 +2,6 @@
 using Portfolio.Contracts.Categories;
 using Portfolio.Contracts.Images;
 using Portfolio.Contracts.Technologies;
-using System;
-using System.Collections.Generic;
-using System.Text;
 
 namespace Portfolio.Contracts.Projects
 {

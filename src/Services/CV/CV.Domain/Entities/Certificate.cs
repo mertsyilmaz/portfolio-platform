@@ -1,13 +1,9 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
+using CV.Domain.Common;
 
 namespace CV.Domain.Entities
 {
-    public class Certificate
+    public class Certificate : CreatableEntity
     {
-        public Guid Id { get; set; }
-
         public string Name { get; set; } = null!;
 
         public string Issuer { get; set; } = null!;
@@ -17,7 +13,5 @@ namespace CV.Domain.Entities
         public string? CredentialId { get; set; }
 
         public string? CredentialUrl { get; set; }
-
-        public DateTime CreatedAt { get; set; }
     }
 }

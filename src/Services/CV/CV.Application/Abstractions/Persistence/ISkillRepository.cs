@@ -1,16 +1,8 @@
-﻿using CV.Domain.Entities;
-using System;
-using System.Collections.Generic;
-using System.Text;
+using CV.Domain.Entities;
 
 namespace CV.Application.Abstractions.Persistence
 {
-    public interface ISkillRepository
+    public interface ISkillRepository : IRepository<Skill>
     {
-        Task AddAsync(Skill skill);
-        Task<List<Skill>> GetAllAsync();
-        Task<Skill?> GetByIdAsync(Guid id);
-        Task UpdateAsync(Skill skill);
-        Task DeleteAsync(Skill skill);
     }
 }

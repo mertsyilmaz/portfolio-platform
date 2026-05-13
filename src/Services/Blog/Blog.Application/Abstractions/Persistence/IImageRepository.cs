@@ -1,7 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-using Blog.Domain.Entities;
+﻿using Blog.Domain.Entities;
 
 namespace Blog.Application.Abstractions.Persistence
 {

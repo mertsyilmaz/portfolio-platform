@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-
-namespace CV.Contracts.Educations
+﻿namespace CV.Contracts.Educations
 {
     public class CreateEducationResponse
     {

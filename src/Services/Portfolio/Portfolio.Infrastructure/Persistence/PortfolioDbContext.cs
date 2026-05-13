@@ -1,8 +1,6 @@
-﻿using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore;
+using Portfolio.Domain.Common;
 using Portfolio.Domain.Entities;
-using System;
-using System.Collections.Generic;
-using System.Text;
 
 namespace Portfolio.Infrastructure.Persistence
 {
@@ -17,6 +15,31 @@ namespace Portfolio.Infrastructure.Persistence
         public DbSet<Technology> Technologies => Set<Technology>();
         public DbSet<Architecture> Architectures => Set<Architecture>();
         public DbSet<Image> Images => Set<Image>();
+
+        public override int SaveChanges()
+        {
+            ApplyCreationAudit();
+            return base.SaveChanges();
+        }
+
+        public override async Task<int> SaveChangesAsync(CancellationToken cancellationToken = default)
+        {
+            ApplyCreationAudit();
+            return await base.SaveChangesAsync(cancellationToken);
+        }
+
+        private void ApplyCreationAudit()
+        {
+            var now = DateTime.UtcNow;
+            var entries = ChangeTracker
+                .Entries<IHasCreationTime>()
+                .Where(x => x.State == EntityState.Added);
+
+            foreach (var entry in entries)
+            {
+                entry.Entity.CreatedAt = now;
+            }
+        }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
@@ -65,11 +88,8 @@ namespace Portfolio.Infrastructure.Persistence
             });
 
             modelBuilder.Entity<Project>().HasMany(x => x.Categories).WithMany(x => x.Projects);
-
             modelBuilder.Entity<Project>().HasMany(x => x.Technologies).WithMany(x => x.Projects);
-
             modelBuilder.Entity<Project>().HasMany(x => x.Architectures).WithMany(x => x.Projects);
         }
-
     }
 }

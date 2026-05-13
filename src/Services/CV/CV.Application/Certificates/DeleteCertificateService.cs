@@ -1,34 +1,22 @@
-﻿using CV.Application.Abstractions.Persistence;
-using CV.Contracts.Certificates;
-using System;
-using System.Collections.Generic;
-using System.Text;
+using CV.Application.Abstractions.Persistence;
+using CV.Application.Common.Exceptions;
 
 namespace CV.Application.Certificates
 {
     public class DeleteCertificateService : IDeleteCertificateService
     {
-        private readonly ICertificateRepository _repository;
+        private readonly ICertificateRepository _certificateRepository;
 
-        public DeleteCertificateService(ICertificateRepository repository)
+        public DeleteCertificateService(ICertificateRepository certificateRepository)
         {
-            _repository = repository;
+            _certificateRepository = certificateRepository;
         }
 
-        public async Task<DeleteCertificateResponse?> DeleteAsync(Guid id)
+        public async Task DeleteAsync(Guid id)
         {
-            var certificate = await _repository.GetByIdAsync(id);
-
-            if (certificate == null) 
-                return null;
-
-            await _repository.DeleteAsync(certificate);
-
-            return new DeleteCertificateResponse
-            {
-                Id = id,
-                IsDeleted = true
-            };
+            var certificate = await _certificateRepository.GetByIdAsync(id);
+            Guard.AgainstNotFound(certificate, ErrorMessages.CertificateNotFound);
+            await _certificateRepository.DeleteAsync(certificate);
         }
     }
 }

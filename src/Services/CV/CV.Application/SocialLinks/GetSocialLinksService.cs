@@ -1,31 +1,24 @@
-﻿using CV.Application.Abstractions.Persistence;
+using AutoMapper;
+using CV.Application.Abstractions.Persistence;
 using CV.Contracts.SocialLinks;
-using System;
-using System.Collections.Generic;
-using System.Text;
 
 namespace CV.Application.SocialLinks
 {
     public class GetSocialLinksService : IGetSocialLinksService
     {
-        private readonly ISocialLinkRepository _repository;
+        private readonly ISocialLinkRepository _socialLinkRepository;
+        private readonly IMapper _mapper;
 
-        public GetSocialLinksService(ISocialLinkRepository repository)
+        public GetSocialLinksService(ISocialLinkRepository socialLinkRepository, IMapper mapper)
         {
-            _repository = repository;
+            _socialLinkRepository = socialLinkRepository;
+            _mapper = mapper;
         }
 
         public async Task<List<GetSocialLinksResponse>> GetAllAsync()
         {
-            var entities = await _repository.GetAllAsync();
-
-            return entities.Select(x => new GetSocialLinksResponse
-            {
-                Id = x.Id,
-                Platform = x.Platform,
-                Url = x.Url,
-                DisplayOrder = x.DisplayOrder
-            }).ToList();
+            var socialLinks = await _socialLinkRepository.GetAllAsync();
+            return _mapper.Map<List<GetSocialLinksResponse>>(socialLinks);
         }
     }
 }

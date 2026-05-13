@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-
-namespace Portfolio.Contracts.Architectures
+﻿namespace Portfolio.Contracts.Architectures
 {
     public class GetArchitecturesResponse
     {

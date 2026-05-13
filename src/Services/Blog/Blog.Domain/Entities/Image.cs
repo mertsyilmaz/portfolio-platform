@@ -1,8 +1,5 @@
 ﻿using Blog.Domain.Common;
 using Blog.Domain.Enums;
-using System;
-using System.Collections.Generic;
-using System.Text;
 
 namespace Blog.Domain.Entities
 {

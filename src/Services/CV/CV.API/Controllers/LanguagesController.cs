@@ -1,6 +1,5 @@
-﻿using CV.Application.Languages;
+using CV.Application.Languages;
 using CV.Contracts.Languages;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
 namespace CV.API.Controllers
@@ -9,71 +8,59 @@ namespace CV.API.Controllers
     [ApiController]
     public class LanguagesController : ControllerBase
     {
-        private readonly ICreateLanguageService _createService;
-        private readonly IGetLanguagesService _getService;
-        private readonly IGetLanguageByIdService _getByIdService;
-        private readonly IUpdateLanguageService _updateService;
-        private readonly IDeleteLanguageService _deleteService;
+        private readonly ICreateLanguageService _createLanguageService;
+        private readonly IGetLanguagesService _getLanguagesService;
+        private readonly IGetLanguageByIdService _getLanguageByIdService;
+        private readonly IUpdateLanguageService _updateLanguageService;
+        private readonly IDeleteLanguageService _deleteLanguageService;
 
         public LanguagesController(
-            ICreateLanguageService createService,
-            IGetLanguagesService getService,
-            IGetLanguageByIdService getByIdService,
-            IUpdateLanguageService updateService,
-            IDeleteLanguageService deleteService)
+            ICreateLanguageService createLanguageService,
+            IGetLanguagesService getLanguagesService,
+            IGetLanguageByIdService getLanguageByIdService,
+            IUpdateLanguageService updateLanguageService,
+            IDeleteLanguageService deleteLanguageService)
         {
-            _createService = createService;
-            _getService = getService;
-            _getByIdService = getByIdService;
-            _updateService = updateService;
-            _deleteService = deleteService;
+            _createLanguageService = createLanguageService;
+            _getLanguagesService = getLanguagesService;
+            _getLanguageByIdService = getLanguageByIdService;
+            _updateLanguageService = updateLanguageService;
+            _deleteLanguageService = deleteLanguageService;
         }
 
         [HttpPost]
         public async Task<IActionResult> Create(CreateLanguageRequest request)
         {
-            var result = await _createService.CreateAsync(request);
-            return Ok(result);
+            var result = await _createLanguageService.CreateAsync(request);
+            return CreatedAtAction(nameof(GetById), new { id = result.Id }, result);
         }
 
         [HttpGet]
         public async Task<IActionResult> GetAll()
         {
-            var result = await _getService.GetAllAsync();
+            var result = await _getLanguagesService.GetAllAsync();
             return Ok(result);
         }
 
         [HttpGet("{id:guid}")]
         public async Task<IActionResult> GetById(Guid id)
         {
-            var result = await _getByIdService.GetByIdAsync(id);
-
-            if (result is null)
-                return NotFound();
-
+            var result = await _getLanguageByIdService.GetByIdAsync(id);
             return Ok(result);
         }
 
         [HttpPut("{id:guid}")]
         public async Task<IActionResult> Update(Guid id, UpdateLanguageRequest request)
         {
-            var result = await _updateService.UpdateAsync(id, request);
-
-            if (result is null)
-                return NotFound();
-
+            var result = await _updateLanguageService.UpdateAsync(id, request);
             return Ok(result);
         }
 
         [HttpDelete("{id:guid}")]
         public async Task<IActionResult> Delete(Guid id)
         {
-            var result = await _deleteService.DeleteAsync(id);
-
-            if (result is null)
-                return NotFound();
-
-            return Ok(result);
+            await _deleteLanguageService.DeleteAsync(id);
+            return NoContent();
         }
     }
 }

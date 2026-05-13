@@ -1,12 +1,9 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
+using Portfolio.Domain.Common;
 
 namespace Portfolio.Domain.Entities
 {
-    public class Image
+    public class Image : Entity
     {
-        public Guid Id { get; set; }
         public Guid FileId { get; set; }
         public int DisplayOrder { get; set; }
         public bool IsCover { get; set; }

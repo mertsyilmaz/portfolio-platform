@@ -1,12 +1,9 @@
-﻿using CV.Contracts.Experiences;
-using System;
-using System.Collections.Generic;
-using System.Text;
+using CV.Contracts.Experiences;
 
 namespace CV.Application.Experiences
 {
     public interface IUpdateExperienceService
     {
-        Task<UpdateExperienceResponse?> UpdateAsync(Guid id,UpdateExperienceRequest request);
+        Task<UpdateExperienceResponse> UpdateAsync(Guid id, UpdateExperienceRequest request);
     }
 }

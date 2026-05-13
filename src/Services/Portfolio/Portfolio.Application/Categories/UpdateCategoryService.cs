@@ -1,34 +1,30 @@
-﻿using Portfolio.Application.Abstractions.Persistence;
+using AutoMapper;
+using Portfolio.Application.Abstractions.Persistence;
+using Portfolio.Application.Common.Exceptions;
 using Portfolio.Contracts.Categories;
-using System;
-using System.Collections.Generic;
-using System.Text;
 
 namespace Portfolio.Application.Categories
 {
     public class UpdateCategoryService : IUpdateCategoryService
     {
         private readonly ICategoryRepository _categoryRepository;
+        private readonly IMapper _mapper;
 
-        public UpdateCategoryService(ICategoryRepository categoryRepository)
+        public UpdateCategoryService(ICategoryRepository categoryRepository, IMapper mapper)
         {
             _categoryRepository = categoryRepository;
+            _mapper = mapper;
         }
-        public async Task<UpdateCategoryResponse?> UpdateAsync(Guid id, UpdateCategoryRequest request)
+
+        public async Task<UpdateCategoryResponse> UpdateAsync(Guid id, UpdateCategoryRequest request)
         {
             var category = await _categoryRepository.GetByIdAsync(id);
+            Guard.AgainstNotFound(category, ErrorMessages.CategoryNotFound);
 
-            if (category == null) 
-                return null;
-
-            category.Name = request.Name;
-
+            _mapper.Map(request, category);
             await _categoryRepository.UpdateAsync(category);
 
-            return new UpdateCategoryResponse { 
-                Id = category.Id,
-                Name=category.Name,
-            };
+            return _mapper.Map<UpdateCategoryResponse>(category);
         }
     }
 }

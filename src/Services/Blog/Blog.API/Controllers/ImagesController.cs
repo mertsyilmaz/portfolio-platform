@@ -1,6 +1,5 @@
 ﻿using Blog.Application.Images;
 using Blog.Contracts.Images;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Blog.API.Controllers
@@ -36,7 +35,7 @@ namespace Blog.API.Controllers
         public async Task<IActionResult> Create(CreateImageRequest request)
         {
             var result = await _createImageService.CreateAsync(request);
-            return Ok(result);
+            return CreatedAtAction(nameof(GetById), new { id = result.Id }, result);
         }
 
         [HttpGet]
@@ -72,9 +71,9 @@ namespace Blog.API.Controllers
         [HttpDelete("{id:guid}")]
         public async Task<IActionResult> Delete(Guid id)
         {
-            var result = await _deleteImageService.DeleteAsync(id);
+            await _deleteImageService.DeleteAsync(id);
 
-            return Ok(result);
+            return NoContent();
         }
     }
 }

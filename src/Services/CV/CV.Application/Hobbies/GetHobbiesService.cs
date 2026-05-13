@@ -1,29 +1,24 @@
-﻿using CV.Application.Abstractions.Persistence;
+using AutoMapper;
+using CV.Application.Abstractions.Persistence;
 using CV.Contracts.Hobbies;
-using System;
-using System.Collections.Generic;
-using System.Text;
 
 namespace CV.Application.Hobbies
 {
     public class GetHobbiesService : IGetHobbiesService
     {
-        private readonly IHobbyRepository _repository;
+        private readonly IHobbyRepository _hobbyRepository;
+        private readonly IMapper _mapper;
 
-        public GetHobbiesService(IHobbyRepository repository)
+        public GetHobbiesService(IHobbyRepository hobbyRepository, IMapper mapper)
         {
-            _repository = repository;
+            _hobbyRepository = hobbyRepository;
+            _mapper = mapper;
         }
 
         public async Task<List<GetHobbiesResponse>> GetAllAsync()
         {
-            var hobbies = await _repository.GetAllAsync();
-
-            return hobbies.Select(x => new GetHobbiesResponse{
-                Id = x.Id,
-                Name = x.Name,
-                Description = x.Description
-            }).ToList();
+            var hobbies = await _hobbyRepository.GetAllAsync();
+            return _mapper.Map<List<GetHobbiesResponse>>(hobbies);
         }
     }
 }

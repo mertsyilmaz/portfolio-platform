@@ -1,6 +1,5 @@
-﻿using CV.Application.Skills;
+using CV.Application.Skills;
 using CV.Contracts.Skills;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
 namespace CV.API.Controllers
@@ -15,60 +14,53 @@ namespace CV.API.Controllers
         private readonly IUpdateSkillService _updateSkillService;
         private readonly IDeleteSkillService _deleteSkillService;
 
-        public SkillsController(IDeleteSkillService deleteSkillService, IUpdateSkillService updateSkillService, IGetSkillByIdService getSkillByIdService, IGetSkillsService getSkillsService, ICreateSkillService createSkillService)
+        public SkillsController(
+            ICreateSkillService createSkillService,
+            IGetSkillsService getSkillsService,
+            IGetSkillByIdService getSkillByIdService,
+            IUpdateSkillService updateSkillService,
+            IDeleteSkillService deleteSkillService)
         {
-            _deleteSkillService = deleteSkillService;
-            _updateSkillService = updateSkillService;
-            _getSkillByIdService = getSkillByIdService;
-            _getSkillsService = getSkillsService;
             _createSkillService = createSkillService;
+            _getSkillsService = getSkillsService;
+            _getSkillByIdService = getSkillByIdService;
+            _updateSkillService = updateSkillService;
+            _deleteSkillService = deleteSkillService;
         }
 
         [HttpPost]
-        public async Task<IActionResult> Create([FromBody] CreateSkillRequest request)
+        public async Task<IActionResult> Create(CreateSkillRequest request)
         {
-            var response = await _createSkillService.CreateAsync(request);
-            return Ok(response);
+            var result = await _createSkillService.CreateAsync(request);
+            return CreatedAtAction(nameof(GetById), new { id = result.Id }, result);
         }
 
         [HttpGet]
         public async Task<IActionResult> GetAll()
         {
-            var response = await _getSkillsService.GetAllAsync();
-            return Ok(response);
+            var result = await _getSkillsService.GetAllAsync();
+            return Ok(result);
         }
 
         [HttpGet("{id:guid}")]
         public async Task<IActionResult> GetById(Guid id)
         {
-            var response = await _getSkillByIdService.GetByIdAsync(id);
-
-            if (response is null)
-                return NotFound();
-
-            return Ok(response);
+            var result = await _getSkillByIdService.GetByIdAsync(id);
+            return Ok(result);
         }
 
         [HttpPut("{id:guid}")]
-        public async Task<IActionResult> Update(Guid id, [FromBody] UpdateSkillRequest request)
+        public async Task<IActionResult> Update(Guid id, UpdateSkillRequest request)
         {
-            var response = await _updateSkillService.UpdateAsync(id, request);
-
-            if (response is null)
-                return NotFound();
-
-            return Ok(response);
+            var result = await _updateSkillService.UpdateAsync(id, request);
+            return Ok(result);
         }
 
         [HttpDelete("{id:guid}")]
         public async Task<IActionResult> Delete(Guid id)
         {
-            var response = await _deleteSkillService.DeleteAsync(id);
-
-            if (response is null)
-                return NotFound();
-
-            return Ok(response);
+            await _deleteSkillService.DeleteAsync(id);
+            return NoContent();
         }
     }
 }

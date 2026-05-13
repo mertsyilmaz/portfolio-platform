@@ -1,8 +1,5 @@
-﻿using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
-using Portfolio.Application.Categories;
 using Portfolio.Application.Technologies;
-using Portfolio.Contracts.Categories;
 using Portfolio.Contracts.Technologies;
 
 namespace Portfolio.API.Controllers
@@ -35,7 +32,7 @@ namespace Portfolio.API.Controllers
         public async Task<IActionResult> Create(CreateTechnologyRequest request)
         {
             var result = await _createTechnologyService.CreateAsync(request);
-            return Ok(result);
+            return CreatedAtAction(nameof(GetById), new { id = result.Id }, result);
         }
 
         [HttpGet]
@@ -49,10 +46,6 @@ namespace Portfolio.API.Controllers
         public async Task<IActionResult> GetById(Guid id)
         {
             var result = await _getTechnologyByIdService.GetByIdAsync(id);
-
-            if (result is null)
-                return NotFound();
-
             return Ok(result);
         }
 
@@ -60,22 +53,14 @@ namespace Portfolio.API.Controllers
         public async Task<IActionResult> Update(Guid id, UpdateTechnologyRequest request)
         {
             var result = await _updateTechnologyService.UpdateAsync(id, request);
-
-            if (result is null)
-                return NotFound();
-
             return Ok(result);
         }
 
         [HttpDelete("{id:guid}")]
         public async Task<IActionResult> Delete(Guid id)
         {
-            var result = await _deleteTechnologyService.DeleteAsync(id);
-
-            if (result is null)
-                return NotFound();
-
-            return Ok(result);
+            await _deleteTechnologyService.DeleteAsync(id);
+            return NoContent();
         }
     }
 }

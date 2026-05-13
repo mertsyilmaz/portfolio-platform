@@ -1,20 +1,23 @@
-﻿using Identity.Contracts.Auth;
-using System;
-using System.Collections.Generic;
-using System.Text;
 using Identity.Application.Abstractions.Persistence;
 using Identity.Application.Abstractions.Security;
+using Identity.Application.Common.Exceptions;
+using Identity.Contracts.Auth;
 
 namespace Identity.Application.Auth
 {
     public class AuthService : IAuthService
     {
         private readonly IUserRepository _userRepository;
+        private readonly IPasswordService _passwordService;
         private readonly ITokenService _tokenService;
 
-        public AuthService(IUserRepository userRepository, ITokenService tokenService)
+        public AuthService(
+            IUserRepository userRepository,
+            IPasswordService passwordService,
+            ITokenService tokenService)
         {
             _userRepository = userRepository;
+            _passwordService = passwordService;
             _tokenService = tokenService;
         }
 
@@ -22,15 +25,11 @@ namespace Identity.Application.Auth
         {
             var user = await _userRepository.GetByEmailAsync(request.Email);
 
-            if (user is null) 
-            {
-                throw new Exception("User not found");
-            }
+            Guard.AgainstUnauthorized(user is not null, ErrorMessages.InvalidCredentials);
+            Guard.AgainstUnauthorized(user!.IsActive, ErrorMessages.InvalidCredentials);
 
-            if (user.PasswordHash != request.Password)
-            {
-                throw new Exception("Invalid password");
-            }
+            var passwordVerified = _passwordService.VerifyPassword(user, user.PasswordHash, request.Password);
+            Guard.AgainstUnauthorized(passwordVerified, ErrorMessages.InvalidCredentials);
 
             var token = _tokenService.CreateToken(user);
 

@@ -1,40 +1,28 @@
-﻿using CV.Application.Abstractions.Persistence;
+using AutoMapper;
+using CV.Application.Abstractions.Persistence;
+using CV.Application.Common.Exceptions;
 using CV.Contracts.SocialLinks;
-using System;
-using System.Collections.Generic;
-using System.Text;
 
 namespace CV.Application.SocialLinks
 {
     public class UpdateSocialLinkService : IUpdateSocialLinkService
     {
-        private readonly ISocialLinkRepository _repository;
+        private readonly ISocialLinkRepository _socialLinkRepository;
+        private readonly IMapper _mapper;
 
-        public UpdateSocialLinkService(ISocialLinkRepository repository)
+        public UpdateSocialLinkService(ISocialLinkRepository socialLinkRepository, IMapper mapper)
         {
-            _repository = repository;
+            _socialLinkRepository = socialLinkRepository;
+            _mapper = mapper;
         }
 
-        public async Task<UpdateSocialLinkResponse?> UpdateAsync(Guid id, UpdateSocialLinkRequest request)
+        public async Task<UpdateSocialLinkResponse> UpdateAsync(Guid id, UpdateSocialLinkRequest request)
         {
-            var entity = await _repository.GetByIdAsync(id);
-
-            if (entity is null)
-                return null;
-
-            entity.Platform = request.Platform;
-            entity.Url = request.Url;
-            entity.DisplayOrder = request.DisplayOrder;
-
-            await _repository.UpdateAsync(entity);
-
-            return new UpdateSocialLinkResponse
-            {
-                Id = entity.Id,
-                Platform = entity.Platform,
-                Url = entity.Url,
-                DisplayOrder = entity.DisplayOrder
-            };
+            var socialLink = await _socialLinkRepository.GetByIdAsync(id);
+            Guard.AgainstNotFound(socialLink, ErrorMessages.SocialLinkNotFound);
+            _mapper.Map(request, socialLink);
+            await _socialLinkRepository.UpdateAsync(socialLink);
+            return _mapper.Map<UpdateSocialLinkResponse>(socialLink);
         }
     }
 }

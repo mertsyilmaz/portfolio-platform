@@ -1,35 +1,27 @@
-﻿using Portfolio.Application.Abstractions.Persistence;
+using AutoMapper;
+using Portfolio.Application.Abstractions.Persistence;
+using Portfolio.Application.Common.Exceptions;
 using Portfolio.Contracts.Images;
-using System;
-using System.Collections.Generic;
-using System.Text;
 
 namespace Portfolio.Application.Images
 {
     public class GetImageByIdService : IGetImageByIdService
     {
         private readonly IImageRepository _imageRepository;
+        private readonly IMapper _mapper;
 
-        public GetImageByIdService(IImageRepository imageRepository)
+        public GetImageByIdService(IImageRepository imageRepository, IMapper mapper)
         {
             _imageRepository = imageRepository;
+            _mapper = mapper;
         }
 
-        public async Task<GetImageByIdResponse?> GetByIdAsync(Guid id)
+        public async Task<GetImageByIdResponse> GetByIdAsync(Guid id)
         {
             var image = await _imageRepository.GetByIdAsync(id);
+            Guard.AgainstNotFound(image, ErrorMessages.ImageNotFound);
 
-            if (image == null)
-                return null;
-
-            return new GetImageByIdResponse
-            {
-                Id = image.Id,
-                FileId = image.FileId,
-                DisplayOrder = image.DisplayOrder,
-                IsCover = image.IsCover,
-                ProjectId = image.ProjectId
-            };
+            return _mapper.Map<GetImageByIdResponse>(image);
         }
     }
 }

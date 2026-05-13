@@ -1,57 +1,36 @@
-﻿using Portfolio.Application.Abstractions.Persistence;
-using Portfolio.Application.Abstractions.Services;
+using AutoMapper;
+using Portfolio.Application.Abstractions.Persistence;
+using Portfolio.Application.Abstractions.Rules;
 using Portfolio.Contracts.Images;
 using Portfolio.Domain.Entities;
-using System;
-using System.Collections.Generic;
-using System.Text;
 
 namespace Portfolio.Application.Images
 {
     public class CreateImageService : ICreateImageService
     {
         private readonly IImageRepository _imageRepository;
-        private readonly IProjectRepository _projectRepository;
-        private readonly IFileService _fileService;
+        private readonly IMapper _mapper;
+        private readonly IPortfolioReferenceValidationService _referenceValidationService;
 
-        public CreateImageService(IImageRepository imageRepository, IProjectRepository projectRepository, IFileService fileService)
+        public CreateImageService(
+            IImageRepository imageRepository,
+            IMapper mapper,
+            IPortfolioReferenceValidationService referenceValidationService)
         {
             _imageRepository = imageRepository;
-            _projectRepository = projectRepository;
-            _fileService = fileService;
+            _mapper = mapper;
+            _referenceValidationService = referenceValidationService;
         }
 
         public async Task<CreateImageResponse> CreateAsync(CreateImageRequest request)
         {
-            var project = await _projectRepository.GetByIdAsync(request.ProjectId);
+            await _referenceValidationService.GetRequiredProjectAsync(request.ProjectId);
+            await _referenceValidationService.ValidateFileExistsAsync(request.FileId);
 
-            if (project == null)
-                throw new Exception("Project not found.");
-
-            var fileExists = await _fileService.ExistsAsync(request.FileId);
-            if (!fileExists)
-                throw new Exception("File not found.");
-
-            var image = new Image
-            {
-                Id = Guid.NewGuid(),
-                FileId = request.FileId,
-                DisplayOrder = request.DisplayOrder,
-                IsCover = request.IsCover,
-                ProjectId = request.ProjectId
-            };
-
+            var image = _mapper.Map<Image>(request);
             await _imageRepository.AddAsync(image);
 
-            return new CreateImageResponse
-            {
-                Id = image.Id,
-                FileId = image.FileId,
-                DisplayOrder = image.DisplayOrder,
-                IsCover = image.IsCover,
-                ProjectId = image.ProjectId
-            };
+            return _mapper.Map<CreateImageResponse>(image);
         }
     }
-
 }

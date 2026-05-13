@@ -1,9 +1,4 @@
 ﻿using Blog.Domain.Common;
-using System;
-using System.Collections.Generic;
-using System.Text;
-using System.Xml.Linq;
-using static System.Net.Mime.MediaTypeNames;
 
 namespace Blog.Domain.Entities
 {

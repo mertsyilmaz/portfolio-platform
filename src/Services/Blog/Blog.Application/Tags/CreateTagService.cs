@@ -2,9 +2,6 @@
 using Blog.Application.Abstractions.Persistence;
 using Blog.Contracts.Tags;
 using Blog.Domain.Entities;
-using System;
-using System.Collections.Generic;
-using System.Text;
 
 namespace Blog.Application.Tags
 {

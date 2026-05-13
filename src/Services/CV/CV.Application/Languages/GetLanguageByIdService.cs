@@ -1,35 +1,26 @@
-﻿using CV.Application.Abstractions.Persistence;
+using AutoMapper;
+using CV.Application.Abstractions.Persistence;
+using CV.Application.Common.Exceptions;
 using CV.Contracts.Languages;
-using System;
-using System.Collections.Generic;
-using System.Text;
 
 namespace CV.Application.Languages
 {
     public class GetLanguageByIdService : IGetLanguageByIdService
     {
         private readonly ILanguageRepository _languageRepository;
+        private readonly IMapper _mapper;
 
-        public GetLanguageByIdService(ILanguageRepository languageRepository)
+        public GetLanguageByIdService(ILanguageRepository languageRepository, IMapper mapper)
         {
             _languageRepository = languageRepository;
+            _mapper = mapper;
         }
 
         public async Task<GetLanguageByIdResponse> GetByIdAsync(Guid id)
         {
-            var language  = await _languageRepository.GetByIdAsync(id);
-
-            if (language == null)
-                return null;
-
-            return new GetLanguageByIdResponse
-            {
-                Id = language.Id,
-                Name = language.Name,
-                Level = language.Level,
-                CreatedAt = language.CreatedAt
-            };
-            
+            var language = await _languageRepository.GetByIdAsync(id);
+            Guard.AgainstNotFound(language, ErrorMessages.LanguageNotFound);
+            return _mapper.Map<GetLanguageByIdResponse>(language);
         }
     }
 }

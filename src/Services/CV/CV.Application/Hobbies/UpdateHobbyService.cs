@@ -1,38 +1,30 @@
-﻿using CV.Application.Abstractions.Persistence;
+using AutoMapper;
+using CV.Application.Abstractions.Persistence;
+using CV.Application.Common.Exceptions;
 using CV.Contracts.Hobbies;
-using System;
-using System.Collections.Generic;
-using System.Text;
 
 namespace CV.Application.Hobbies
 {
     public class UpdateHobbyService : IUpdateHobbyService
     {
-        private readonly IHobbyRepository _repository;
+        private readonly IHobbyRepository _hobbyRepository;
+        private readonly IMapper _mapper;
 
-        public UpdateHobbyService(IHobbyRepository repository)
+        public UpdateHobbyService(IHobbyRepository hobbyRepository, IMapper mapper)
         {
-            _repository = repository;
+            _hobbyRepository = hobbyRepository;
+            _mapper = mapper;
         }
 
-        public async Task<UpdateHobbyResponse?> UpdateAsync(Guid id, UpdateHobbyRequest request)
+        public async Task<UpdateHobbyResponse> UpdateAsync(Guid id, UpdateHobbyRequest request)
         {
-            var hobby = await _repository.GetByIdAsync(id);
+            var hobby = await _hobbyRepository.GetByIdAsync(id);
+            Guard.AgainstNotFound(hobby, ErrorMessages.HobbyNotFound);
 
-            if (hobby == null) 
-                return null;
+            _mapper.Map(request, hobby);
+            await _hobbyRepository.UpdateAsync(hobby);
 
-            hobby.Name = request.Name;
-            hobby.Description = request.Description;
-
-            await _repository.UpdateAsync(hobby);
-
-            return new UpdateHobbyResponse
-            {
-                Id = hobby.Id,
-                Name = hobby.Name,
-                Description = hobby.Description
-            };
+            return _mapper.Map<UpdateHobbyResponse>(hobby);
         }
     }
 }

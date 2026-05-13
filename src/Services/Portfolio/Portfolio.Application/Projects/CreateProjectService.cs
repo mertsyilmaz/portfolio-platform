@@ -1,57 +1,41 @@
-﻿using Portfolio.Application.Abstractions.Persistence;
+using AutoMapper;
+using Portfolio.Application.Abstractions.Persistence;
+using Portfolio.Application.Abstractions.Rules;
 using Portfolio.Contracts.Projects;
 using Portfolio.Domain.Entities;
-using System;
-using System.Collections.Generic;
-using System.Text;
 
 namespace Portfolio.Application.Projects
 {
     public class CreateProjectService : ICreateProjectService
     {
-        private readonly IProjectRepository _repository;
-        private readonly ICategoryRepository _categoryRepository;
-        private readonly ITechnologyRepository _technologyRepository;
-        private readonly IArchitectureRepository _architectureRepository;
+        private readonly IProjectRepository _projectRepository;
+        private readonly IMapper _mapper;
+        private readonly IPortfolioReferenceValidationService _referenceValidationService;
 
-        public CreateProjectService(IProjectRepository repository, ICategoryRepository categoryRepository, ITechnologyRepository technologyRepository, IArchitectureRepository architectureRepository)
+        public CreateProjectService(
+            IProjectRepository projectRepository,
+            IMapper mapper,
+            IPortfolioReferenceValidationService referenceValidationService)
         {
-            _repository = repository;
-            _categoryRepository = categoryRepository;
-            _technologyRepository = technologyRepository;
-            _architectureRepository = architectureRepository;
+            _projectRepository = projectRepository;
+            _mapper = mapper;
+            _referenceValidationService = referenceValidationService;
         }
 
         public async Task<CreateProjectResponse> CreateAsync(CreateProjectRequest request)
         {
-            var categories = await _categoryRepository.GetByIdsAsync(request.CategoryIds);
-            var technologies = await _technologyRepository.GetByIdsAsync(request.TechnologyIds);
-            var architectures = await _architectureRepository.GetByIdsAsync(request.ArchitectureIds);
+            var categories = await _referenceValidationService.GetRequiredCategoriesAsync(request.CategoryIds);
+            var technologies = await _referenceValidationService.GetRequiredTechnologiesAsync(request.TechnologyIds);
+            var architectures = await _referenceValidationService.GetRequiredArchitecturesAsync(request.ArchitectureIds);
 
-            var project = new Project
-            {
-                Id = Guid.NewGuid(),
-                Name = request.Name,
-                Summary = request.Summary,
-                GithubUrl = request.GithubUrl,
-                IsFeatured = request.IsFeatured,
-                ProjectUrl = request.ProjectUrl,
-                DisplayOrder = request.DisplayOrder,
-                CreatedAt = DateTime.UtcNow,
-                Description = request.Description,
+            var project = _mapper.Map<Project>(request);
+            project.Categories = categories;
+            project.Technologies = technologies;
+            project.Architectures = architectures;
 
-                Categories = categories,
-                Technologies = technologies,
-                Architectures = architectures
-            };
+            await _projectRepository.AddAsync(project);
 
-            await _repository.AddAsync(project);
-
-            return new CreateProjectResponse
-            {
-                Id = project.Id,
-                Name = project.Name
-            };
+            return _mapper.Map<CreateProjectResponse>(project);
         }
     }
 }

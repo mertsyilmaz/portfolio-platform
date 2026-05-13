@@ -2,9 +2,6 @@
 using Blog.Application.Abstractions.Persistence;
 using Blog.Application.Common.Exceptions;
 using Blog.Contracts.Tags;
-using System;
-using System.Collections.Generic;
-using System.Text;
 
 namespace Blog.Application.Tags
 {
@@ -23,8 +20,7 @@ namespace Blog.Application.Tags
         {
             var tag = await _tagRepository.GetByIdAsync(id);
 
-            if (tag == null)
-                throw new NotFoundException("Tag not found.");
+            Guard.AgainstNotFound(tag, ErrorMessages.TagNotFound);
 
             return _mapper.Map<GetTagsResponse>(tag);
         }

@@ -1,35 +1,26 @@
-﻿using Portfolio.Application.Abstractions.Persistence;
+using AutoMapper;
+using Portfolio.Application.Abstractions.Persistence;
 using Portfolio.Contracts.Categories;
 using Portfolio.Domain.Entities;
-using System;
-using System.Collections.Generic;
-using System.Text;
 
 namespace Portfolio.Application.Categories
 {
     public class CreateCategoryService : ICreateCategoryService
     {
         private readonly ICategoryRepository _categoryRepository;
+        private readonly IMapper _mapper;
 
-        public CreateCategoryService(ICategoryRepository categoryRepository)
+        public CreateCategoryService(ICategoryRepository categoryRepository, IMapper mapper)
         {
             _categoryRepository = categoryRepository;
+            _mapper = mapper;
         }
+
         public async Task<CreateCategoryResponse> CreateAsync(CreateCategoryRequest request)
         {
-            var category = new Category
-            {
-                Id = Guid.NewGuid(),
-                Name = request.Name
-            };
-
+            var category = _mapper.Map<Category>(request);
             await _categoryRepository.AddAsync(category);
-
-            return new CreateCategoryResponse
-            {
-                Id = category.Id,
-                Name = request.Name
-            };
+            return _mapper.Map<CreateCategoryResponse>(category);
         }
     }
 }
